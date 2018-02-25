@@ -39,13 +39,42 @@ global.addFileLayer = (e) ->
  DOM events
 ###
 
-global.fileMenuOpen = false
+global.menuOpen = {}
+
+addMenu = (str) ->
+	global.menuOpen[str] = false
+	mnuBtn = document.getElementById "mnu-" + str
+	mnuBtns = document.getElementById "mnu-" + str + "-btns"
+
+	mnuBtn.onclick = ->
+		if not global.menuOpen[str]
+			mnuBtns.style.left = global.mouse.x + "px"
+			mnuBtns.style.top = global.mouse.y + "px"
+			mnuBtns.removeAttribute "hidden"
+			global.menuOpen[str] = true
+		else
+			mnuBtns.setAttribute "hidden", true
+			global.menuOpen[str] = false
+
+	window.addEventListener "click", (e) ->
+		if e.target isnt mnuBtn and global.menuOpen[str]
+			global.menuOpen[str] = false
+			mnuBtns.setAttribute "hidden", true
+
+addMenu "file"
+addMenu "edit"
+addMenu "view"
+addMenu "help"
 
 btnOpen = document.getElementById "mnu-file-open"
 openModal = document.getElementById "open-file-modal"
 openClose = document.getElementById "open-close"
 openOpen = document.getElementById "open-open"
 fileInput = document.getElementById "file-input"
+
+###
+File Menu
+###
 
 btnOpen.onclick = ->
 	if global.fileMenuOpen
@@ -56,19 +85,7 @@ btnOpen.onclick = ->
 openClose.onclick = ->
 	openModal.setAttribute "hidden", true
 
-fileMenu = document.getElementById "mnu-file"
 fileMenuOpen = document.getElementById "mnu-file-open"
-fileMenuButtons = document.getElementById "mnu-file-btns"
-
-fileMenu.onclick = ->
-	if not global.fileMenuOpen
-		fileMenuButtons.style.left = global.mouse.x + "px"
-		fileMenuButtons.style.top = global.mouse.y + "px"
-		fileMenuButtons.removeAttribute "hidden"
-		global.fileMenuOpen = true
-	else
-		fileMenuButtons.setAttribute "hidden", true
-		global.fileMenuOpen = false
 
 openOpen.onclick = ->
 	if fileInput.files.length > 0
@@ -82,6 +99,4 @@ openOpen.onclick = ->
 window.onclick = (e) ->
 	if e.target is openModal
 		openModal.setAttribute "hidden", true
-	if e.target isnt fileMenu and global.fileMenuOpen
-		global.fileMenuOpen = false
-		fileMenuButtons.setAttribute "hidden", true
+
