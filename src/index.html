@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Image Editor</title>
+		<link rel="stylesheet" href="style.css"></link>
+	</head>
+	<body>
+		<table>
+			<thead>
+				<tr>
+					<th colspan="4">Image Editor<th>
+				</tr>
+			</thead>
+			<tr id="menu">
+				<td colspan="4">
+					<button class="mnubtn" id="mnu-file">File</button>
+					
+					<button class="mnubtn">Edit</button>
+					<button class="mnubtn">View</button>
+					
+					<button class="mnubtn">Help</button>
+					
+				</td>
+			</tr>
+			<tr id="settings">
+				<td colspan="4">
+					<ul>
+						
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td id="tools">
+					
+				</td>
+				<td id="frame" colspan="2">
+					<canvas id="cnv" width="1024px" height="800px">
+						
+					</canvas>
+					<!-- The layers will be offscreen canvases for fast rendering -->
+				</td>
+				<td>
+					<ol id="layers" reversed>
+						<li>Background <button>x</button></li>
+					</ol>
+				</td>
+			</tr>
+			<tfoot>
+				<tr>
+					<td colspan="4">&copy; Tom Merchant 2018<td>
+				</tr>
+			</tfoot>
+		</table>
+
+		<div id="open-file-modal" class="modal" hidden>
+			<div class="modal-content">
+				<h2>Select File:</h2>
+				<br>
+				<input id="file-input" type="file" accept="image/*">
+				<br>
+				<br>
+				<br>
+				<br>
+				<button class="close" id="open-close">Cancel</button>
+				<button class="close" id="open-open">Open</button>
+			</div>
+		</div>
+
+		<div id="mnu-file-btns" class="popup" hidden>
+			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
+				<li>
+					<button class="mnubtn2">New</button>
+				</li>
+				<li>
+					<button class="mnubtn2"id="mnu-file-open">Open</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Open URL</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Save</button>
+				</li>
+			</ul>
+		</div>
+
+		<div id="mnu-edit-btns">
+			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;" hidden>
+				<li>
+					<button class="mnubtn2">Undo</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Redo</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Copy</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Cut</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Paste</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Resize</button>
+				</li>
+			</ul>
+		</div>
+
+		<div id="mnu-view-btns">
+			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;" hidden>
+				<li>
+					<button class="mnubtn2">Tools</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Layers</button>
+				</li>
+			</ul>
+		</div>
+
+		<div id="mnu-help-btns">
+			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;" hidden>
+				<li>
+					<button class="mnubtn2">About</button>
+				</li>
+				<li>
+					<button class="mnubtn2">Help</button>
+				</li>
+			</ul>
+		</div>
+
+		<script type="text/javascript" src="JSEdit.out.js"></script>
+	</body>
+</html>
