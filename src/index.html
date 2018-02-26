@@ -14,28 +14,25 @@
 			<tr id="menu">
 				<td colspan="4">
 					<button class="mnubtn" id="mnu-file">File</button>
-					
-					<button class="mnubtn">Edit</button>
-					<button class="mnubtn">View</button>
-					
-					<button class="mnubtn">Help</button>
-					
+					<button class="mnubtn" id="mnu-edit">Edit</button>
+					<button class="mnubtn" id="mnu-view">View</button>
+					<button class="mnubtn" id="mnu-help">Help</button>
 				</td>
 			</tr>
 			<tr id="settings">
 				<td colspan="4">
 					<ul>
-						
+
 					</ul>
 				</td>
 			</tr>
 			<tr>
 				<td id="tools">
-					
+
 				</td>
 				<td id="frame" colspan="2">
 					<canvas id="cnv" width="1024px" height="800px">
-						
+
 					</canvas>
 					<!-- The layers will be offscreen canvases for fast rendering -->
 				</td>
@@ -66,16 +63,30 @@
 			</div>
 		</div>
 
+		<div id="open-url-modal" class="modal" hidden>
+			<div class="modal-content">
+				<h2>Input URL:</h2>
+				<br>
+				<input id="url-input" type="text">
+				<br>
+				<br>
+				<br>
+				<br>
+				<button class="close" id="open-url-close">Cancel</button>
+				<button class="close" id="open-url-open">Open</button>
+			</div>
+		</div>
+
 		<div id="mnu-file-btns" class="popup" hidden>
 			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
 					<button class="mnubtn2">New</button>
 				</li>
 				<li>
-					<button class="mnubtn2"id="mnu-file-open">Open</button>
+					<button class="mnubtn2" id="mnu-file-open">Open</button>
 				</li>
 				<li>
-					<button class="mnubtn2">Open URL</button>
+					<button class="mnubtn2" id="mnu-url-open">Open URL</button>
 				</li>
 				<li>
 					<button class="mnubtn2">Save</button>
@@ -83,8 +94,8 @@
 			</ul>
 		</div>
 
-		<div id="mnu-edit-btns">
-			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;" hidden>
+		<div id="mnu-edit-btns" class="popup" hidden>
+			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
 					<button class="mnubtn2">Undo</button>
 				</li>
@@ -106,8 +117,8 @@
 			</ul>
 		</div>
 
-		<div id="mnu-view-btns">
-			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;" hidden>
+		<div id="mnu-view-btns" class="popup" hidden>
+			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
 					<button class="mnubtn2">Tools</button>
 				</li>
@@ -117,8 +128,8 @@
 			</ul>
 		</div>
 
-		<div id="mnu-help-btns">
-			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;" hidden>
+		<div id="mnu-help-btns" class="popup" hidden>
+			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
 					<button class="mnubtn2">About</button>
 				</li>

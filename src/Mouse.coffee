@@ -31,13 +31,13 @@ class global.Mouse
 	onMouseDown: (e) =>
 		@checkBtns(e)
 
-		for i in @onMouseDown
+		for i in @btnDownHandlers
 			i(e)
 
 	onMouseUp: (e) =>
 		@checkBtns(e)
 
-		for i in @onMouseUp
+		for i in @btnUpHandlers
 			i(e)
 
 	translateCoordinates: ->
@@ -56,4 +56,3 @@ class global.Mouse
 
 	addButtonPresshandler: (f) ->
 		@btnDownHandlers.push f
-	
