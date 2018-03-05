@@ -2,13 +2,16 @@
 
 createNamespace(_)
 
+#include "Props.coffee"
+#include "Utility.coffee"
+#include "Composite.coffee"
 #include "Mouse.coffee"
 #include "Keyboard.coffee"
 #include "Layer.coffee"
 #include "DOM.coffee"
 
-cnv = document.getElementById "cnv"
-ctx = cnv.getContext "2d"
+global.cnv = document.getElementById "cnv"
+global.ctx = global.cnv.getContext "2d"
 
 global.history = []
 

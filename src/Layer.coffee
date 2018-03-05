@@ -11,12 +11,16 @@ class Layer
 		@ctx = @canvas.getContext '2d'
 		@type = type #Text, raster, shape, etc
 		###
-		X, Y and rotation are used when compositing the image, not when rendering the layer (ease of implementation)
+		X and Y are used when compositing the image, not when rendering the layer (ease of implementation)
 		###
 		[@x, @y, @rotation] = [0, 0, 0]
 		@id = global.layerId++
+		@blendMode = "source-over"
+		@filters = []
+		@upToDate = false
 
 	redraw: ->
+		upToDate = true
 		return
 
 	resize: (newDimensions) ->
@@ -30,11 +34,25 @@ class Layer
 	@return [String] the serialized representation of this layer
 	###
 	serialize: () ->
-		return @canvas.toDataURL()
+		string = @canvas.toDataURL()
+		for i in @filters
+			string += i.serialize()
+		return string
+		
 
 	move: (deltas) ->
 		@x += deltas.x
 		@y += deltas.y
+
+	setAlpha: (newAlpha) ->
+		@ctx.globalAlpha = newAlpha
+
+	rotate: (dTheta) ->
+		@rotation += dTheta
+		@ctx.rotate(dTheta)
+
+	setBlendMode: (@blendMode) ->
+		return
 
 class ImgLayer extends Layer
 	constructor: (image) ->
@@ -42,11 +60,11 @@ class ImgLayer extends Layer
 		@img = image
 
 	redraw: ->
-		super.redraw()
+		super
 		@ctx.drawImage @img, 0, 0, @canvas.width, @canvas.height
 
 	resize: (newDimensions) ->
-		super.resize(newDimensions)
+		super.resize newDimensions
 
 global.removeLayer = (id) ->
 	i = 0
@@ -58,12 +76,10 @@ global.removeLayer = (id) ->
 		i++
 	if found
 		global.layers.splice i, 1
-		global.history.push {type: "layer", id: layer.id, position: i, data: layer.serialize()}
+		global.history.push {type: "delete layer", id: layer.id, position: i, data: layer.serialize()}
 		if global.history.length >= 50
-			global.history.pop()
-	###
-	TODO: Force redraw
-	###
+			global.history.shift()
+	global.composite()
 	layerItem = document.getElementById "layer-" + id
 	if layerItem?
 		layerItem.parentElement.removeChild layerItem
@@ -86,14 +102,22 @@ global.addLayer = (layer) ->
 	closeBtn.innerText += "x"
 	layerItem.innerText += "Layer " + global.layers.length
 	closeBtn.onclick = ->
-		global.removeLayer layer.id
+		global.removeLayer closeBtn.id.replace("close-layer-", "") #For some reason I can''t just use layer.id or wierd issues occur (thanks javascript)
 	layerItem.appendChild closeBtn
 	layerList.insertBefore layerItem, layerList.firstChild
+	layer.redraw()
+	global.composite()
 
 global.addUrlLayer = (url) ->
 	img = new Image()
 	img.src = url
-	global.addLayer new ImgLayer img
+
+	img.onload = ->
+		global.addLayer new ImgLayer img
+
+	img.onerr = ->
+		alert "could not load that image"
+
 
 global.addFileLayer = (e) ->
 	global.addUrlLayer e.target.result
