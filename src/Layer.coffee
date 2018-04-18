@@ -7,6 +7,12 @@ global.layerId = 0
 class Layer
 	constructor: (dimensions, type) ->
 		@canvas = document.createElement 'canvas'
+		
+		if dimensions[0] < global.totalWidth
+			global.totalWidth = dimensions[0]
+		if dimensions[1] < global.totalHeight
+			global.totalHeight = dimensions[1]
+			
 		[@canvas.width, @canvas.height] = dimensions
 		@ctx = @canvas.getContext '2d'
 		@type = type #Text, raster, shape, etc
@@ -38,7 +44,7 @@ class Layer
 		for i in @filters
 			string += i.serialize()
 		return string
-		
+
 
 	move: (deltas) ->
 		@x += deltas.x
@@ -60,7 +66,7 @@ class ImgLayer extends Layer
 		@img = image
 
 	redraw: ->
-		super
+		super()
 		@ctx.drawImage @img, 0, 0, @canvas.width, @canvas.height
 
 	resize: (newDimensions) ->

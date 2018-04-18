@@ -42,6 +42,16 @@ urlOpen = document.getElementById "open-url-open"
 urlClose = document.getElementById "open-url-close"
 urlInput = document.getElementById "url-input"
 
+btnFilter = document.getElementById "select-filter"
+filterModal = document.getElementById "filter-modal"
+fltSelect = document.getElementById "filter-select-apply"
+fltClose = document.getElementById "filter-select-cancel"
+fltType = document.getElementById "filter-type"
+
+blurModal = document.getElementById "filter-blur-modal"
+blurCancel = document.getElementById "filter-blur-cancel"
+blurApply = document.getElementById "filter-blur-apply"
+
 ###
 File Menu
 ###
@@ -74,11 +84,50 @@ openOpen.onclick = ->
 		fileInput.value = null
 		openModal.setAttribute "hidden", true
 
+###
+Edit Menu
+###
+
+btnFilter.onclick = ->
+	filterModal.removeAttribute "hidden"
+
+fltClose.onclick = ->
+	filterModal.setAttribute "hidden", true
+
+fltSelect.onclick = ->
+	type = document.querySelector("input[name=filter-type]:checked").value
+	filterModal.setAttribute "hidden", true
+	document.getElementById("filter-" + type + "-modal").removeAttribute "hidden"
+	modalCanvas = document.querySelector("#filter-" + type + "-modal canvas")
+	modalCanvas.width = global.cnv.width / 2
+	modalCanvas.height = global.cnv.height / 2
+	global.copyToCanvas(modalCanvas, 0.5)
+
+blurCancel.onclick = ->
+	blurModal.setAttribute "hidden", true
+
+blurApply.onclick = ->
+	applyTo = document.querySelector("input[name=blur-target]:checked").value
+	if applyTo is "image"
+		###Add to global.filters###
+	else
+		###Add to currentLayer.filters###
+	###push change to global.history###
+
+for element in document.querySelectorAll "input[name=blur-type]"
+	element.onclick = (->
+		for elem in document.querySelectorAll ".bluroption"
+			elem.setAttribute "hidden", true
+		document.getElementById(@value + "-options").removeAttribute "hidden"
+		).bind element
+
 window.onclick = (e) ->
 	if e.target is openModal
 		openModal.setAttribute "hidden", true
 	else if e.target is openUrlModal
 	  openUrlModal.setAttribute "hidden", true
+	else if e.target is filterModal
+		filterModal.setAttribute "hidden", true
 
 global.addKeyDownHandler (k) ->
   if k is "Enter"

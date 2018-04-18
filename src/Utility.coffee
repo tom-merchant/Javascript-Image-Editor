@@ -14,3 +14,10 @@ global.regamma = (x) ->
 
 global.luminosityAverage = (arr) ->
 	return regamma global.average((ungamma x for x in arr))
+
+global.copyToCanvas = (cnv) ->
+	ctx = cnv.getContext("2d")
+	ctx.save()
+	ctx.scale scale, scale
+	ctx.drawImage global.cnv, 0, 0
+	ctx.restore()

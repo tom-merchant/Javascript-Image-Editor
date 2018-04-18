@@ -8,7 +8,7 @@ class global.Mouse
 
 	constructor: (@refElem) ->
 		[@pageX, @pageY, @x, @y] = [0, 0, 0, 0]
-		[@moveHandlers, @btnUpHandlers, @btnDownHandlers] = [[], [], []]
+		[@moveHandlers, @btnUpHandlers, @btnDownHandlers, @scrollHandlers] = [[], [], [], []]
 		@oldElem = @refElem
 		[@elemRect, @hasScrolled] = [null, false]
 		[@m1down, @m2down] = [false, false]
@@ -16,6 +16,7 @@ class global.Mouse
 		@refElem.addEventListener("mousemove", @onMouseMove)
 		@refElem.addEventListener("mouseup", @onMouseUp)
 		@refElem.addEventListener("mousedown", @onMouseDown)
+		@refElem.addEventListener("wheel", @onMouseWheel)
 
 	onMouseMove: (e) =>
 		[@pageX, @pageY] = [e.pageX, e.pageY]
@@ -32,13 +33,19 @@ class global.Mouse
 		@checkBtns(e)
 
 		for i in @btnDownHandlers
-			i(e)
+			i e
 
 	onMouseUp: (e) =>
 		@checkBtns(e)
 
 		for i in @btnUpHandlers
-			i(e)
+			i e
+
+	onMouseWheel: (e) =>
+		e.preventDefault()
+		for i in @scrollHandlers
+			i e
+		return false
 
 	translateCoordinates: ->
 		if @refElem isnt @oldElem or !@elemRect?
@@ -56,3 +63,6 @@ class global.Mouse
 
 	addButtonPresshandler: (f) ->
 		@btnDownHandlers.push f
+
+	addScrollHandler: (f) ->
+		@scrollHandlers.push f

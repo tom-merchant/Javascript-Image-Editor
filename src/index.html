@@ -77,6 +77,72 @@
 			</div>
 		</div>
 
+		<div id="filter-modal" class="modal" hidden>
+			<div class="modal-content">
+				<h2>Select filter</h2>
+				<br>
+				 Blur: <input type="radio" name="filter-type" value="blur" checked></input>
+				 <br>
+				 Sharpen: <input type="radio" name="filter-type" value="sharpen"></input>
+				<br>
+				<br>
+				<br>
+				<br>
+				<button class="close" id="filter-select-apply">Open</button>
+				<button class="close" id="filter-select-cancel">Cancel</button>
+			</div>
+		</div>
+
+		<div id="filter-blur-modal" class="modal" hidden>
+			<div class="modal-content">
+				<table>
+					<tr>
+						<td>
+							<h2>Set parameters</h2>
+							<br>
+							Gaussian: <input type="radio" name="blur-type" value="gaussian" checked></input>
+							<br>
+							Box: <input type="radio" name="blur-type" value="box"></input>
+							<br>
+							Order 1 Lowpass: <input type="radio" name="blur-type" value="lowpass"></input>
+							<br>
+							Biquad Lowpass: <input type="radio" name="blur-type" value="biquad"></input>
+							<br>
+							<br>
+							<br>
+							<div id="gaussian-options" class="bluroption" hidden>
+								gaussian
+							</div>
+							<div id="box-options" class="bluroption" hidden>
+								box
+							</div>
+							<div id="lowpass-options" class="bluroption" hidden>
+								lowpass
+							</div>
+							<div id="biquad-options" class="bluroption" hidden>
+								biquad
+							</div>
+							<br>
+							<br>
+							Apply to:
+							<br>
+							Whole Image: <input type="radio" name="blur-target" value="image" checked></input>
+							<br>
+							Current Layer: <input type="radio" name="blur-target" value="layer"></input>
+							<br>
+							<br>
+							<button class="close" id="filter-blur-apply">Apply</button>
+							<button class="close" id="filter-blur-cancel">Cancel</button>
+						</td>
+						<td>
+							<canvas wdith="512px" height="400px"></canvas>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="filter-sharpen-modal" class="modal" hidden>
+		</div>
 		<div id="mnu-file-btns" class="popup" hidden>
 			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
@@ -113,6 +179,9 @@
 				</li>
 				<li>
 					<button class="mnubtn2">Resize</button>
+				</li>
+				<li>
+					<button class="mnubtn2" id="select-filter">Filter</button>
 				</li>
 			</ul>
 		</div>
