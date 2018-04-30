@@ -6,3 +6,13 @@ global.clamp = (val, min, max) ->
   else if val < min
     return min
   else return val
+
+###
+Returns the value of the gaussian distribution at a particular point
+
+@param point [Number] The position on the gaussian distribution
+@param sigma [Number] The value of one standard deviation
+###
+global.gauss = (point, sigma) ->
+  global.assert(sigma > 1, "Standard deviation cannot be negative")
+  return 1/(sigma*Math.sqrt(2*Math.PI)) * Math.exp -Math.pow(point, 2)/(2*sigma)

@@ -1,0 +1,90 @@
+
+SUBROUTINE apply_kernel (image, kernel)
+    new_image = new Image (image.width, image.height)
+    n = 0
+
+    FOR n FROM 0 TO image.width * image.height - 1 DO
+        x = n MOD image.width
+        y = FLOOR (n / image.width)
+
+        new_kernel = resize_kernel (kernel, x, y, image)
+
+        new_image[x][y] = process_pixel (new_kernel, x, y, image)
+    END FOR
+
+    RETURN new_image
+END SUB
+
+SUBROUTINE resize_kernel (kernel, x, y, image)
+    IF y > kernel.height / 2 THEN
+        border_y_top = 0
+    ELSE
+        border_y_top = kernel.height / 2 - y
+    END IF
+
+    IF y < image.height - kernel.height / 2 THEN
+        border_y_bottom = 0
+    ELSE
+        border_y_bottom = kernel.height / 2 - (image.height - y)
+    END IF
+
+    IF x > kernel.width / 2 THEN
+        border_x_left = 0
+    ELSE
+        border_x_left = kernel.width / 2 - x
+    END IF
+
+    IF x < image.width - kernel.width / 2 THEN
+        border_x_right = 0
+    ELSE
+        border_x_right = kernel.height / 2 - (image.width - x)
+    END IF
+
+    RETURN resize (kernel, border_y_top, border_y_bottom, border_x_left, border_x_right)
+END SUB
+
+SUBROUTINE resize (kernel, top_excess, bottom_excess, left_excess, right_excess)
+    FOR i FROM 0 TO top_excess DO
+        clear_row (kernel, i)
+    END FOR
+
+    FOR i FROM 0 TO bottom_excess DO
+        clear_row (kernel, kernel.height - i)
+    END FOR
+
+    FOR i FROM 0 TO left_excess DO
+        clear_column (kernel, i)
+    END FOR
+
+    FOR i FROM 0 TO right_excess DO
+        clear_column (kernel, kernel.width - i)
+    END FOR
+END SUB
+
+SUBROUTINE clear_row (kernel, y)
+    FOR x FROM 0 TO kernel.width DO
+        kernel[x, y] = NaN
+    END FOR
+END SUB
+
+SUBROUTINE clear_column (kernel, x)
+    FOR y FROM 0 TO kernel.height DO
+        kernel[x, y] = NaN
+    END FOR
+END SUB
+
+SUBROUTINE process_pixel (kernel, i, j, image)
+    sum = 0
+    n = 0
+
+    FOR x FROM 0 TO kernel.width - 1 DO
+        FOR y FROM 0 TO kernel.height - 1 DO
+            IF NOT kernel [x, y] == NaN
+                INCREMENT n
+                sum = sum + image[i + x - kernel.width / 2, j + y - kernel.height / 2] * kernel[x][y]
+            END IF
+        END FOR
+    END FOR
+
+    RETURN sum / n
+END SUB

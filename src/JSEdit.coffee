@@ -1,6 +1,6 @@
 #include <jdefs.h>
 
-createNamespace(_)
+createNamespace(filter)
 
 #include "Props.coffee"
 #include "Control.coffee"
@@ -24,6 +24,9 @@ global.mouse = new global.Mouse(window.document.body)
 
 global.totalwidth = global.cnv.width
 global.totalHeight = global.cnv.height
+
+global.tmp = document.createElement "canvas"
+[global.tmp.width, global.tmp.height] = [global.cnv.width, global.cnv.height]
 
 global.mouse.addScrollHandler (e) ->
   if e.ctrlKey
