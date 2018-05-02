@@ -11,4 +11,4 @@ for file in files:
     os.system("cpp -I\"headers\" -P -undef -Wundef -std=c99 -nostdinc -Wtrigraphs -fdollars-in-identifiers -C -E " + file + " -o " + ifile)
     os.system("coffee --compile " + ifile)
 
-os.system("codo -x out.coffee")
+#os.system("codo -x out.coffee")

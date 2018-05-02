@@ -14,5 +14,5 @@ Returns the value of the gaussian distribution at a particular point
 @param sigma [Number] The value of one standard deviation
 ###
 global.gauss = (point, sigma) ->
-  global.assert(sigma > 1, "Standard deviation cannot be negative")
+  global.assert(sigma > 0, "Standard deviation cannot be negative")
   return 1/(sigma*Math.sqrt(2*Math.PI)) * Math.exp -Math.pow(point, 2)/(2*sigma)
