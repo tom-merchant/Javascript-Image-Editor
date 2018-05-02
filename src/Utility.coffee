@@ -12,8 +12,16 @@ global.ungamma = (x) ->
 global.regamma = (x) ->
   return Math.pow(x, 1/global.gamma)
 
+###
+Calculates the percieved luminosity for a set of RGB values, useful for grayscale effect
+###
 global.luminosityAverage = (arr) ->
-  return regamma global.average((ungamma x for x in arr))
+  raw = (global.ungamma x for x in arr)
+  ###
+  Coefficients from ITU BT.709
+  ###
+  return ~~global.regamma 0.2126 * raw[0] + 0.7152 * raw[1] + 0.0722 * raw[2]
+
 
 global.copyToCanvas = (cnv, src=global.cnv, scale=1) ->
   ctx = cnv.getContext("2d")

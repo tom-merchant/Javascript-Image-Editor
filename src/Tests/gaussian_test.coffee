@@ -7,7 +7,7 @@ createNamespace(filter)
 cnv = document.getElementById("cnv")
 global.ctx = cnv.getContext("2d")
 
-global.gamma = 1.8
+global.gamma = 2.2
 
 img = document.createElement("img")
 
