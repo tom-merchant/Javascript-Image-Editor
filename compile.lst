@@ -1,2 +1,2 @@
 src/JSEdit.coffee
-src/Tests/gaussian_test.coffee
+src/Tests/Filter/IIR_test.coffee

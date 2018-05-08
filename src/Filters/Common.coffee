@@ -7,6 +7,8 @@ Tom Merchant 2018
 #include <jdefs.h>
 #include "../Maths.coffee"
 #include "../Utility.coffee"
+#include "IIRFilter.coffee"
+#include "Biquad.coffee"
 
 global.filter.kernelCache = {}
 
@@ -118,44 +120,54 @@ global.filter.processPixel = (kernel, i, j, img) ->
 
   return [~~global.regamma(sumr), ~~global.regamma(sumg), ~~global.regamma(sumb), ~~global.regamma(suma)]
 
-###
-Builds the approppriate kernel to perform the required filtering operation
 
-@param type [String] The type of kernel to build
-@param radius [Number] the radius if using a blur or sharpen etc
-@param width [Integer] Optional, the width of the kernel (some filters ignore this)
-@pparam height [Integer] Optional, the height of the kernel (some filters ignore this)
+global.filter.applyFilter = (filter, data) ->
+  newData = global.ctx.createImageData data.width, data.height
+  newDataArr = []
+  newDataArry = []
+  halfmax = global.ungamma(255) / 2
+  for ch in [0...4]
+    for y in [0...data.height]
+      for x in [0...data.width]
+        len = (y * data.width + x) * 4
+        px = global.ungamma(data.data[len + ch]) / halfmax - 1
+        newDataArr[len + ch] = filter.nextSample(px)
+      filter.clear()
+    for y in [0...data.height]
+      for x in [(data.width - 1)..0]
+        len = (y * data.width + x) * 4
+        px = newDataArr[len + ch]
+        newDataArr[len + ch] = filter.nextSample(px)
+      filter.clear()
+    for x in [0...data.width]
+      for y in [0...data.height]
+        len = (y * data.width + x) * 4
+        px = newDataArr[len + ch]
+        newDataArry[len + ch] = filter.nextSample(px)
+      filter.clear()
+    for x in [0...data.width]
+      for y in [(data.height - 1)..0]
+        len = (y * data.width + x) * 4
+        px = newDataArry[len + ch]
+        newDataArry[len + ch] = filter.nextSample(px)
+        newDataArr[len + ch] = newDataArry[len + ch]
+        newDataArr[len + ch] = global.regamma((newDataArr[len + ch] + 1)  * halfmax)
+      filter.clear()
+  for y in [0...data.height]
+    for x in [0...data.width]
+      len = (y * data.width + x) * 4
+      newData.data[len] = newDataArr[len]
+      newData.data[len + 1] = newDataArr[len + 1]
+      newData.data[len + 2] = newDataArr[len + 2]
+      newData.data[len + 3] = newDataArr[len + 3]
+  return newData
 
-@return [Object] The built kernel
-###
-global.filter.buildKernel = (type, radius) ->
-  width = radius * 2
-  height = radius * 2
-  kernel =
-    data: []
-    width: width
-    height: height
-    type: type
-    radius: radius
-  switch type
-    when "gaussian"
-      size = ~~(radius) * 2 + 1
-      kernel.width = size
-      kernel.height = size
-      centre = [size / 2, size / 2]
-      sum = 0
-      ###
-      TODO: This is inefficient, the gaussian distribution is symmetrical
-      ###
-      for x in [0...kernel.width]
-        for y in [0...kernel.height]
-          dx = centre[0] - x
-          dy = centre[1] - y
-          weight = global.gauss(dx, radius/2) * global.gauss(dy, radius / 2)
-          sum += weight
-          kernel.data[y*width + x] = weight
-      for x in [0...kernel.width]
-        for y in [0...kernel.height]
-          kernel.data[y*width + x] /= sum
-      break
-  return kernel
+global.filter.createBiquad = (type, radius) ->
+  return new global.filter.Biquad(1 / (radius / global.dpi), global.dpi / 2, 0.2, type)
+
+global.filter.createIIR = (radius) ->
+  ###
+  https://stackoverflow.com/questions/21984405/relation-between-sigma-and-radius-on-the-gaussian-blur
+  ###
+  sigma = (radius + 1) / 3.17529952765
+  return new global.filter.IIR(sigma)

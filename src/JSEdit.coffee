@@ -14,6 +14,9 @@ createNamespace(filter)
 global.cnv = document.getElementById "cnv"
 global.ctx = global.cnv.getContext "2d"
 
+unless global.ctx? and global.wglctx
+  alert("Browser not supported!")
+
 global.history = []
 
 global.filters = []

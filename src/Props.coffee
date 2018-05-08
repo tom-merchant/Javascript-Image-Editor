@@ -3,3 +3,4 @@
 global.gamma = 2.2
 global.panRate = 1
 global.zoomRate = 0.05
+global.dpi = 96
