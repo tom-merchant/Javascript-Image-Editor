@@ -31,17 +31,17 @@ global.filter.applyKernel = (kernel, src) ->
 
   cache = global.filter.kernelCache[[kernel.width, kernel.height, kernel.type, kernel.radius]]
 
-  for i in [0...src.width * src.height]
-    x = i % src.width
-    y = Math.floor (i / src.width)
+  for i in [0...src.width * src.height * 4] by 4
+    x = i % (src.width * 4)
+    y = Math.floor (i / (src.width * 4))
 
     newKernel = global.filter.resizeKernel kernel, x, y, src, cache
 
     filteredPixel = global.filter.processPixel newKernel, x, y, src
-    newData.data[i*4] = filteredPixel[0]
-    newData.data[i*4+1] = filteredPixel[1]
-    newData.data[i*4+2] = filteredPixel[2]
-    newData.data[i*4+3] = filteredPixel[3]
+    newData.data[i] = filteredPixel[0]
+    newData.data[i+1] = filteredPixel[1]
+    newData.data[i+2] = filteredPixel[2]
+    newData.data[i+3] = filteredPixel[3]
   return newData
 
 global.filter.resizeKernel  = (kernel, x, y, img, cache) ->
@@ -123,8 +123,7 @@ global.filter.processPixel = (kernel, i, j, img) ->
 
 global.filter.applyFilter = (filter, data) ->
   newData = global.ctx.createImageData data.width, data.height
-  newDataArr = []
-  newDataArry = []
+  newDataArr = new Array(data.width * data.height * 4)
   halfmax = global.ungamma(255) / 2
   for ch in [0...4]
     for y in [0...data.height]
@@ -143,14 +142,13 @@ global.filter.applyFilter = (filter, data) ->
       for y in [0...data.height]
         len = (y * data.width + x) * 4
         px = newDataArr[len + ch]
-        newDataArry[len + ch] = filter.nextSample(px)
+        newDataArr[len + ch] = filter.nextSample(px)
       filter.clear()
     for x in [0...data.width]
       for y in [(data.height - 1)..0]
         len = (y * data.width + x) * 4
-        px = newDataArry[len + ch]
-        newDataArry[len + ch] = filter.nextSample(px)
-        newDataArr[len + ch] = newDataArry[len + ch]
+        px = newDataArr[len + ch]
+        newDataArr[len + ch] = filter.nextSample(px)
         newDataArr[len + ch] = global.regamma((newDataArr[len + ch] + 1)  * halfmax)
       filter.clear()
   for y in [0...data.height]
@@ -166,8 +164,7 @@ global.filter.createBiquad = (type, radius) ->
   return new global.filter.Biquad(1 / (radius / global.dpi), global.dpi / 2, 0.2, type)
 
 global.filter.createIIR = (radius) ->
+  ###	
+  https://stackoverflow.com/questions/21984405/relation-between-sigma-and-radius-on-the-gaussian-blur?rq=1
   ###
-  https://stackoverflow.com/questions/21984405/relation-between-sigma-and-radius-on-the-gaussian-blur
-  ###
-  sigma = (radius + 1) / 3.17529952765
-  return new global.filter.IIR(sigma)
+  return new global.filter.IIR((radius + 1) / 3.32904296913)
