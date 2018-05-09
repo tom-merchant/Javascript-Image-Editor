@@ -57,6 +57,8 @@ blurModal = document.getElementById "filter-blur-modal"
 blurCancel = document.getElementById "filter-blur-cancel"
 blurApply = document.getElementById "filter-blur-apply"
 
+blurCanvas = document.getElementById "blurCanvas"
+
 ###
 File Menu
 ###
@@ -106,7 +108,7 @@ fltSelect.onclick = ->
   modalCanvas = document.querySelector("#filter-" + type + "-modal canvas")
   modalCanvas.width = global.cnv.width / 2
   modalCanvas.height = global.cnv.height / 2
-  global.copyToCanvas blurCanvas src=global.cnv, scale=0.5
+  global.copyToCanvas blurCanvas, src=global.rendered, scale=0.5
 
 blurCancel.onclick = ->
   blurModal.setAttribute "hidden", true
@@ -125,8 +127,8 @@ for element in document.querySelectorAll "input[name=blur-type]"
       elem.setAttribute "hidden", true
     document.getElementById(@value + "-options").removeAttribute "hidden"
     ###Apply with default settings###
-    global.applyFilter @value + "blur", global.cnv, global.tmp options=null
-    global.copyToCanvas blurCanvas src=global.tmp, scale=0.5
+    global.applyFilter @value + "blur", global.rendered, global.tmp, options=null
+    global.copyToCanvas blurCanvas, src=global.tmp, scale=0.5
     ).bind element
 
 window.onclick = (e) ->

@@ -8,11 +8,15 @@ class Layer
   constructor: (dimensions, type) ->
     @canvas = document.createElement 'canvas'
     
-    if dimensions[0] < global.totalWidth
+    if dimensions[0] > global.totalWidth
       global.totalWidth = dimensions[0]
-    if dimensions[1] < global.totalHeight
+    if dimensions[1] > global.totalHeight
       global.totalHeight = dimensions[1]
-      
+    global.rendered.width = global.totalWidth
+    global.rendered.height = global.totalHeight
+    global.tmp.width = global.totalWidth
+    global.tmp.height = global.totalHeight
+
     [@canvas.width, @canvas.height] = dimensions
     @ctx = @canvas.getContext '2d'
     @type = type #Text, raster, shape, etc

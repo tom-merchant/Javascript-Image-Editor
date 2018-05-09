@@ -102,25 +102,15 @@
 							<br>
 							Gaussian: <input type="radio" name="blur-type" value="gaussian" checked></input>
 							<br>
-							Box: <input type="radio" name="blur-type" value="box"></input>
-							<br>
-							Order 1 Lowpass: <input type="radio" name="blur-type" value="lowpass"></input>
-							<br>
-							Biquad Lowpass: <input type="radio" name="blur-type" value="biquad"></input>
+							Lowpass: <input type="radio" name="blur-type" value="lowpass"></input>
 							<br>
 							<br>
 							<br>
 							<div id="gaussian-options" class="bluroption" hidden>
 								gaussian
 							</div>
-							<div id="box-options" class="bluroption" hidden>
-								box
-							</div>
 							<div id="lowpass-options" class="bluroption" hidden>
 								lowpass
-							</div>
-							<div id="biquad-options" class="bluroption" hidden>
-								biquad
 							</div>
 							<br>
 							<br>
@@ -135,7 +125,7 @@
 							<button class="close" id="filter-blur-cancel">Cancel</button>
 						</td>
 						<td>
-							<canvas wdith="512px" height="400px"></canvas>
+							<canvas wdith="512px" height="400px" id = "blurCanvas"></canvas>
 						</td>
 					</tr>
 				</table>

@@ -33,6 +33,8 @@
 	border: none;
 	width: 10%;
 	height: 5%;
+	min-width: 20px;
+	min-height: 10px;
 }
 
 .popup

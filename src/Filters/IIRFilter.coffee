@@ -1,6 +1,8 @@
 ###
 Implementation of Young and Van Vliet s recursive Gaussian filter
 https://www.researchgate.net/publication/222453003_Recursive_implementation_of_the_Gaussian_filter
+
+Tom Merchant 2018
 ###
 
 #include <jdefs.h>
@@ -13,7 +15,7 @@ class global.filter.IIR
       q = 0.98711 * sigma - 0.96330
     else
       q = 3.97156 - 4.14554 * Math.sqrt(1 - 0.26891 * sigma)
-    console.log q
+    
     q2 = q * q
     q3 = q2 * q
 

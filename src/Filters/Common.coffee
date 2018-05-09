@@ -120,7 +120,9 @@ global.filter.processPixel = (kernel, i, j, img) ->
 
   return [~~global.regamma(sumr), ~~global.regamma(sumg), ~~global.regamma(sumb), ~~global.regamma(suma)]
 
-
+###
+Filter is run forwards and backwards over both axes
+###
 global.filter.applyFilter = (filter, data) ->
   newData = global.ctx.createImageData data.width, data.height
   newDataArr = new Array(data.width * data.height * 4)
@@ -161,7 +163,12 @@ global.filter.applyFilter = (filter, data) ->
   return newData
 
 global.filter.createBiquad = (type, radius) ->
-  return new global.filter.Biquad(1 / (radius / global.dpi), global.dpi / 2, 0.2, type)
+  ###
+  This filter is a bit tricky, it will produce artifacts at
+  resonance values above about 0.5, 0.4 seems to produce accurate
+  results
+  ###
+  return new global.filter.Biquad(1 / (radius / global.dpi), global.dpi / 2, 0.4, type)
 
 global.filter.createIIR = (radius) ->
   ###	

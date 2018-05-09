@@ -14,7 +14,18 @@ createNamespace(filter)
 global.cnv = document.getElementById "cnv"
 global.ctx = global.cnv.getContext "2d"
 
-unless global.ctx? and global.wglctx
+###
+TODO: global offscreen canvas to render the entire image to when compositing,
+then grab the image to display from that, that should be the data used when
+previewing blurs etc
+###
+
+global.rendered = document.createElement "canvas"
+global.rctx = global.rendered.getContext "2d"
+global.rendered.width = 1
+global.rendered.height = 1
+
+unless global.ctx?
   alert("Browser not supported!")
 
 global.history = []
@@ -25,11 +36,11 @@ global.selectedLayer = 0
 
 global.mouse = new global.Mouse(window.document.body)
 
-global.totalwidth = global.cnv.width
-global.totalHeight = global.cnv.height
+global.totalwidth = global.rendered.width
+global.totalHeight = global.rendered.height
 
 global.tmp = document.createElement "canvas"
-[global.tmp.width, global.tmp.height] = [global.cnv.width, global.cnv.height]
+[global.tmp.width, global.tmp.height] = [global.rendered.width, global.rendered.height]
 
 global.mouse.addScrollHandler (e) ->
   if e.ctrlKey
@@ -38,4 +49,4 @@ global.mouse.addScrollHandler (e) ->
     global.pan(e.deltaY, 0)
   else
     global.pan(e.deltaX, e.deltaY)
-  global.composite()
+  global.reframe()
