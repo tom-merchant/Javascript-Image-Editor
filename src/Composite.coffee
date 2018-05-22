@@ -9,3 +9,4 @@ global.composite = ->
       l.redraw()
     global.rctx.drawImage l.canvas, l.x, l.y
   global.rctx.restore() # Return to the untransformed state
+  global.reframe()

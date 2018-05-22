@@ -7,11 +7,12 @@ global.layerId = 0
 class Layer
   constructor: (dimensions, type) ->
     @canvas = document.createElement 'canvas'
-    
+
     if dimensions[0] > global.totalWidth
       global.totalWidth = dimensions[0]
     if dimensions[1] > global.totalHeight
       global.totalHeight = dimensions[1]
+      
     global.rendered.width = global.totalWidth
     global.rendered.height = global.totalHeight
     global.tmp.width = global.totalWidth

@@ -107,10 +107,10 @@
 							<br>
 							<br>
 							<div id="gaussian-options" class="bluroption" hidden>
-								gaussian
+								radius: <input type="number" name="blur-radius" min="1.5" max="200" value="3" step="0.5" id="gaussian-blur-radius"></input>
 							</div>
 							<div id="lowpass-options" class="bluroption" hidden>
-								lowpass
+								radius: <input type="number" name="blur-radius" min="1.5" max="200" value="3" step="0.5" id="lowpass-blur-radius"></input>
 							</div>
 							<br>
 							<br>
@@ -132,6 +132,46 @@
 			</div>
 		</div>
 		<div id="filter-sharpen-modal" class="modal" hidden>
+			<div class="modal-content">
+				<table>
+					<tr>
+						<td>
+							<h2>Set parameters</h2>
+							<br>
+							Unsharp: <input type="radio" name="sharpen-type" value="unsharp" checked></input>
+							<br>
+							Sharpen: <input type="radio" name="sharpen-type" value="sharpen"></input>
+							<br>
+							Biquad: <input type="radio" name="sharpen-type" value="biquad"></input>
+							<br>
+							<br>
+							<div id="unsharp-options" class="sharpenoption" hidden>
+								radius: <input type="number" name="sharpen-radius" min="1.5" max="200" value="3" step="0.5" id="unsharp-sharpen-radius"></input>
+							</div>
+							<div id="sharpen-options" class="sharpenoption" hidden>
+								radius: <input type="number" name="sharpen-radius" min="1.5" max="200" value="3" step="0.5" id="sharpen-sharpen-radius"></input>
+							</div>
+							<div id="biquad-options" class="sharpenoption" hidden>
+								radius: <input type="number" name="sharpen-radius" min="1.5" max="200" value="3" step="0.5" id="biquad-sharpen-radius"></input>
+							</div>
+							<br>
+							<br>
+							Apply to:
+							<br>
+							Whole Image: <input type="radio" name="blur-target" value="image" checked></input>
+							<br>
+							Current Layer: <input type="radio" name="blur-target" value="layer"></input>
+							<br>
+							<br>
+							<button class="close" id="filter-sharpen-apply">Apply</button>
+							<button class="close" id="filter-sharpen-cancel">Cancel</button>
+						</td>
+						<td>
+							<canvas wdith="512px" height="400px" id = "sharpenCanvas"></canvas>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 		<div id="mnu-file-btns" class="popup" hidden>
 			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">

@@ -30,11 +30,6 @@ addMenu = (str) ->
       global.menuOpen[str] = false
       mnuBtns.setAttribute "hidden", true
 
-addMenu "file"
-addMenu "edit"
-addMenu "view"
-addMenu "help"
-
 btnOpen = document.getElementById "mnu-file-open"
 openModal = document.getElementById "open-file-modal"
 openClose = document.getElementById "open-close"
@@ -57,7 +52,19 @@ blurModal = document.getElementById "filter-blur-modal"
 blurCancel = document.getElementById "filter-blur-cancel"
 blurApply = document.getElementById "filter-blur-apply"
 
+sharpenModal = document.getElementById "filter-sharpen-modal"
+sharpenCancel = document.getElementById "filter-sharpen-cancel"
+sharpenApply = document.getElementById "filter-sharpen-apply"
+
+gaussianRadius = document.getElementById "gaussian-blur-radius"
+lowpassRadius = document.getElementById "lowpass-blur-radius"
+
+unsharpRadius = document.getElementById "unsharp-sharpen-radius"
+biquadRadius = document.getElementById "biquad-sharpen-radius"
+
 blurCanvas = document.getElementById "blurCanvas"
+
+sharpenCanvas = document.getElementById "sharpenCanvas"
 
 ###
 File Menu
@@ -108,13 +115,35 @@ fltSelect.onclick = ->
   modalCanvas = document.querySelector("#filter-" + type + "-modal canvas")
   modalCanvas.width = global.cnv.width / 2
   modalCanvas.height = global.cnv.height / 2
-  global.copyToCanvas blurCanvas, src=global.rendered, scale=0.5
+  switch type
+    when "blur"
+      blurtype = document.querySelector("input[name=blur-type]:checked").value
+      document.getElementById(blurtype + "-options").removeAttribute "hidden"
+      global.applyFilter blurtype + "blur", global.rendered, global.tmp, options={radius: document.getElementById(blurtype + "-blur-radius").value}
+      break
+    when "sharpen"
+      sharpentype = document.querySelector("input[name=sharpen-type]:checked").value
+      document.getElementById(sharpentype + "-options").removeAttribute "hidden"
+      global.applyFilter sharpentype + "sharpen", global.rendered, global.tmp, options={radius: document.getElementById(sharpentype + "-sharpen-radius").value}
+      break
+  global.copyToCanvas modalCanvas, src=global.tmp, scale=0.5
 
 blurCancel.onclick = ->
   blurModal.setAttribute "hidden", true
 
+sharpenCancel.onclick = ->
+  sharpenModal.setAttribute "hidden", true
+
 blurApply.onclick = ->
   applyTo = document.querySelector("input[name=blur-target]:checked").value
+  if applyTo is "image"
+    ###Add to global.filters###
+  else
+    ###Add to currentLayer.filters###
+  ###push change to global.history###
+
+sharpenApply.onclick = ->
+  applyTo = document.querySelector("input[name=sharpen-target]:checked").value
   if applyTo is "image"
     ###Add to global.filters###
   else
@@ -127,9 +156,27 @@ for element in document.querySelectorAll "input[name=blur-type]"
       elem.setAttribute "hidden", true
     document.getElementById(@value + "-options").removeAttribute "hidden"
     ###Apply with default settings###
-    global.applyFilter @value + "blur", global.rendered, global.tmp, options=null
+    global.applyFilter @value + "blur", global.rendered, global.tmp, options={radius: document.getElementById(@value + "-blur-radius").value}
     global.copyToCanvas blurCanvas, src=global.tmp, scale=0.5
     ).bind element
+
+for element in document.querySelectorAll "input[name=sharpen-type]"
+  element.onclick = (->
+    for elem in document.querySelectorAll ".sharpenoption"
+      elem.setAttribute "hidden", true
+    document.getElementById(@value + "-options").removeAttribute "hidden"
+    ###Apply with default settings###
+    global.applyFilter @value + "sharpen", global.rendered, global.tmp, options={radius: document.getElementById(@value + "-sharpen-radius").value}
+    global.copyToCanvas sharpenCanvas, src=global.tmp, scale=0.5
+    ).bind element
+
+bindRadiusChange = (elem, modal, flt, canvas)->
+  elem.onchange = ((e) ->
+    unless @modal.getAttribute "hidden"
+      val = @elem.value
+      global.applyFilter @flt, global.rendered, global.tmp, options={radius: val}
+      global.copyToCanvas @canvas, src=global.tmp, scale=0.5
+  ).bind {elem: elem, modal: modal, flt: flt, canvas: canvas}
 
 window.onclick = (e) ->
   if e.target is openModal
@@ -145,3 +192,13 @@ global.addKeyDownHandler (k) ->
       openOpen.onclick()
     else if !openUrlModal.getAttribute "hidden"
       urlOpen.onclick()
+
+addMenu "file"
+addMenu "edit"
+addMenu "view"
+addMenu "help"
+
+bindRadiusChange gaussianRadius, blurModal, "gaussianblur", blurCanvas
+bindRadiusChange lowpassRadius, blurModal, "lowpassblur", blurCanvas
+bindRadiusChange unsharpRadius, sharpenModal, "unsharpsharpen", sharpenCanvas
+bindRadiusChange biquadRadius, sharpenModal, "biquadsharpen", sharpenCanvas

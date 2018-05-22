@@ -1,6 +1,7 @@
 #include <jdefs.h>
 
 createNamespace(filter)
+createNamespace(tools)
 
 #include "Props.coffee"
 #include "Control.coffee"
@@ -13,6 +14,7 @@ createNamespace(filter)
 
 global.cnv = document.getElementById "cnv"
 global.ctx = global.cnv.getContext "2d"
+global.ctx.imageSmoothingEnabled = false
 
 ###
 TODO: global offscreen canvas to render the entire image to when compositing,
@@ -22,6 +24,7 @@ previewing blurs etc
 
 global.rendered = document.createElement "canvas"
 global.rctx = global.rendered.getContext "2d"
+global.rctx.imageSmoothingEnabled = false
 global.rendered.width = 1
 global.rendered.height = 1
 
@@ -36,7 +39,7 @@ global.selectedLayer = 0
 
 global.mouse = new global.Mouse(window.document.body)
 
-global.totalwidth = global.rendered.width
+global.totalWidth = global.rendered.width
 global.totalHeight = global.rendered.height
 
 global.tmp = document.createElement "canvas"

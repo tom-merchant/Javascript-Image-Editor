@@ -171,7 +171,4 @@ global.filter.createBiquad = (type, radius) ->
   return new global.filter.Biquad(1 / (radius / global.dpi), global.dpi / 2, 0.4, type)
 
 global.filter.createIIR = (radius) ->
-  ###	
-  https://stackoverflow.com/questions/21984405/relation-between-sigma-and-radius-on-the-gaussian-blur?rq=1
-  ###
-  return new global.filter.IIR((radius + 1) / 3.32904296913)
+  return new global.filter.IIR(radius / 3)
