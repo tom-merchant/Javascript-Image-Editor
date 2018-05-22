@@ -1,18 +1,18 @@
 #include <jdefs.h>
 
 keyStates =
-	A: false
+	A: off
 
 keyDownHandlers = []
 keyUpHandlers = []
 
 global.onKeyDown = (e) ->
-	keyStates[e.key] = true
+	keyStates[e.key] = on
 	for h in keyDownHandlers
 		h(e.key)
 
 global.onKeyUp = (e) ->
-	keyStates[e.key] = false
+	keyStates[e.key] = off
 	for h in keyUpHandlers
 		h(e.key)
 

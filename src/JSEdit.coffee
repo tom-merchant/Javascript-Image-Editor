@@ -14,7 +14,7 @@ createNamespace(tools)
 
 global.cnv = document.getElementById "cnv"
 global.ctx = global.cnv.getContext "2d"
-global.ctx.imageSmoothingEnabled = false
+global.ctx.imageSmoothingEnabled = no
 
 ###
 TODO: global offscreen canvas to render the entire image to when compositing,
@@ -24,7 +24,7 @@ previewing blurs etc
 
 global.rendered = document.createElement "canvas"
 global.rctx = global.rendered.getContext "2d"
-global.rctx.imageSmoothingEnabled = false
+global.rctx.imageSmoothingEnabled = no
 global.rendered.width = 1
 global.rendered.height = 1
 
@@ -37,7 +37,9 @@ global.filters = []
 
 global.selectedLayer = 0
 
-global.mouse = new global.Mouse(window.document.body)
+global.mouse = new global.Mouse window.document.body
+
+global.canvasMouse = new global.Mouse global.cnv
 
 global.totalWidth = global.rendered.width
 global.totalHeight = global.rendered.height

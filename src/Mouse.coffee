@@ -10,8 +10,8 @@ class global.Mouse
     [@pageX, @pageY, @x, @y] = [0, 0, 0, 0]
     [@moveHandlers, @btnUpHandlers, @btnDownHandlers, @scrollHandlers] = [[], [], [], []]
     @oldElem = @refElem
-    [@elemRect, @hasScrolled] = [null, false]
-    [@m1down, @m2down] = [false, false]
+    [@elemRect, @hasScrolled] = [null, no]
+    [@m1down, @m2down] = [no, no]
 
     @refElem.addEventListener("mousemove", @onMouseMove)
     @refElem.addEventListener("mouseup", @onMouseUp)

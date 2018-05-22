@@ -28,10 +28,10 @@ class Layer
     @id = global.layerId++
     @blendMode = "source-over"
     @filters = []
-    @upToDate = false
+    @upToDate = no
 
   redraw: ->
-    upToDate = true
+    upToDate = yes
     return
 
   resize: (newDimensions) ->
@@ -79,10 +79,14 @@ class ImgLayer extends Layer
 
 global.removeLayer = (id) ->
   i = 0
-  found = false
+  found = no
+  ###
+  TODO: determine if layers are always in order already and
+  if so use a binary search
+  ###
   for layer in global.layers
     if layer.id = id
-      found = true
+      found = yes
       break
     i++
   if found

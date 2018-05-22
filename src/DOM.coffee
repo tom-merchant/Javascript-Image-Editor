@@ -11,7 +11,7 @@ Sets up the menu buttons defined in the document
 @param str [String] The name of the menu button
 ###
 addMenu = (str) ->
-  global.menuOpen[str] = false
+  global.menuOpen[str] = no
   mnuBtn = document.getElementById "mnu-" + str
   mnuBtns = document.getElementById "mnu-" + str + "-btns"
 
@@ -20,15 +20,15 @@ addMenu = (str) ->
       mnuBtns.style.left = global.mouse.x + "px"
       mnuBtns.style.top = global.mouse.y + "px"
       mnuBtns.removeAttribute "hidden"
-      global.menuOpen[str] = true
+      global.menuOpen[str] = no
     else
-      mnuBtns.setAttribute "hidden", true
-      global.menuOpen[str] = false
+      mnuBtns.setAttribute "hidden", yes
+      global.menuOpen[str] = no
 
   window.addEventListener "click", (e) ->
     if e.target isnt mnuBtn and global.menuOpen[str]
-      global.menuOpen[str] = false
-      mnuBtns.setAttribute "hidden", true
+      global.menuOpen[str] = no
+      mnuBtns.setAttribute "hidden", yes
 
 btnOpen = document.getElementById "mnu-file-open"
 openModal = document.getElementById "open-file-modal"
@@ -78,16 +78,16 @@ urlOpen.onclick = ->
     url = urlInput.value
     urlInput.value = null
     global.addUrlLayer url
-    openUrlModal.setAttribute "hidden", true
+    openUrlModal.setAttribute "hidden", yes
 
 urlClose.onclick = ->
-  openUrlModal.setAttribute "hidden", true
+  openUrlModal.setAttribute "hidden", yes
 
 btnOpenUrl.onclick = ->
   openUrlModal.removeAttribute "hidden"
 
 openClose.onclick = ->
-  openModal.setAttribute "hidden", true
+  openModal.setAttribute "hidden", yes
 
 openOpen.onclick = ->
   if fileInput.files.length > 0
@@ -96,7 +96,7 @@ openOpen.onclick = ->
     reader.onload = global.addFileLayer
     reader.readAsDataURL file
     fileInput.value = null
-    openModal.setAttribute "hidden", true
+    openModal.setAttribute "hidden", yes
 
 ###
 Edit Menu
@@ -106,11 +106,11 @@ btnFilter.onclick = ->
   filterModal.removeAttribute "hidden"
 
 fltClose.onclick = ->
-  filterModal.setAttribute "hidden", true
+  filterModal.setAttribute "hidden", yes
 
 fltSelect.onclick = ->
   type = document.querySelector("input[name=filter-type]:checked").value
-  filterModal.setAttribute "hidden", true
+  filterModal.setAttribute "hidden", yes
   document.getElementById("filter-" + type + "-modal").removeAttribute "hidden"
   modalCanvas = document.querySelector("#filter-" + type + "-modal canvas")
   modalCanvas.width = global.cnv.width / 2
@@ -129,10 +129,10 @@ fltSelect.onclick = ->
   global.copyToCanvas modalCanvas, src=global.tmp, scale=0.5
 
 blurCancel.onclick = ->
-  blurModal.setAttribute "hidden", true
+  blurModal.setAttribute "hidden", yes
 
 sharpenCancel.onclick = ->
-  sharpenModal.setAttribute "hidden", true
+  sharpenModal.setAttribute "hidden", yes
 
 blurApply.onclick = ->
   applyTo = document.querySelector("input[name=blur-target]:checked").value
@@ -153,7 +153,7 @@ sharpenApply.onclick = ->
 for element in document.querySelectorAll "input[name=blur-type]"
   element.onclick = (->
     for elem in document.querySelectorAll ".bluroption"
-      elem.setAttribute "hidden", true
+      elem.setAttribute "hidden", yes
     document.getElementById(@value + "-options").removeAttribute "hidden"
     ###Apply with default settings###
     global.applyFilter @value + "blur", global.rendered, global.tmp, options={radius: document.getElementById(@value + "-blur-radius").value}
@@ -163,7 +163,7 @@ for element in document.querySelectorAll "input[name=blur-type]"
 for element in document.querySelectorAll "input[name=sharpen-type]"
   element.onclick = (->
     for elem in document.querySelectorAll ".sharpenoption"
-      elem.setAttribute "hidden", true
+      elem.setAttribute "hidden", yes
     document.getElementById(@value + "-options").removeAttribute "hidden"
     ###Apply with default settings###
     global.applyFilter @value + "sharpen", global.rendered, global.tmp, options={radius: document.getElementById(@value + "-sharpen-radius").value}
@@ -180,11 +180,11 @@ bindRadiusChange = (elem, modal, flt, canvas)->
 
 window.onclick = (e) ->
   if e.target is openModal
-    openModal.setAttribute "hidden", true
+    openModal.setAttribute "hidden", yes
   else if e.target is openUrlModal
-    openUrlModal.setAttribute "hidden", true
+    openUrlModal.setAttribute "hidden", yes
   else if e.target is filterModal
-    filterModal.setAttribute "hidden", true
+    filterModal.setAttribute "hidden", yes
 
 global.addKeyDownHandler (k) ->
   if k is "Enter"
