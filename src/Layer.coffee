@@ -12,7 +12,7 @@ class Layer
       global.totalWidth = dimensions[0]
     if dimensions[1] > global.totalHeight
       global.totalHeight = dimensions[1]
-      
+
     global.rendered.width = global.totalWidth
     global.rendered.height = global.totalHeight
     global.tmp.width = global.totalWidth
@@ -29,6 +29,7 @@ class Layer
     @blendMode = "source-over"
     @filters = []
     @upToDate = no
+    @raster = global.ctx.createImageData dimensions...
 
   redraw: ->
     upToDate = yes
@@ -39,17 +40,34 @@ class Layer
     @canvas.height = newDimensions.height
     return
 
-  ###
-  Serializes this layer to a string
+  addFilter: (type, options) ->
+    @filters.push
+      type: type
+      options: options
 
-  @return [String] the serialized representation of this layer
   ###
-  serialize: () ->
-    string = @canvas.toDataURL()
-    for i in @filters
-      string += i.serialize()
-    return string
+  Sets a given pixel to a given colour in this layers overlay raster
 
+  @return [String] The old pixel in string form {x, y, r, g, b, a, newr, newg, newb, newa}
+  ###
+  setpixel: (x, y, color) ->
+    pos = (y * width + x) * 4
+    oldData =
+      x: x
+      y: y
+      r: @raster.data[pos]
+      g: @raster.data[pos + 1]
+      b: @raster.data[pos + 2]
+      a: @raster.data[pos + 3]
+      newr: color[0]
+      newg: color[1]
+      newb: color[2]
+      newa: color[3]
+    @raster.data[pos] = color[0]
+    @raster.data[pos + 1] = color[1]
+    @raster.data[pos + 2] = color[2]
+    @raster.data[pos + 3] = color[3]
+    return oldData
 
   move: (deltas) ->
     @x += deltas.x
@@ -82,7 +100,7 @@ global.removeLayer = (id) ->
   found = no
   ###
   TODO: determine if layers are always in order already and
-  if so use a binary search
+  if so possibly use a binary search
   ###
   for layer in global.layers
     if layer.id = id
@@ -91,7 +109,7 @@ global.removeLayer = (id) ->
     i++
   if found
     global.layers.splice i, 1
-    global.history.push {type: "delete layer", id: layer.id, position: i, data: layer.serialize()}
+    global.history.push {type: "delete layer", id: layer.id, position: i, data: JSON.stringify(layer)}
     if global.history.length >= 50
       global.history.shift()
   global.composite()
@@ -122,6 +140,20 @@ global.addLayer = (layer) ->
   layerList.insertBefore layerItem, layerList.firstChild
   layer.redraw()
   global.composite()
+
+global.getLayer = (layerId) ->
+  i = 0
+  found = no
+  ###
+  TODO: determine if layers are always in order already and
+  if so use a binary search
+  ###
+  for layer in global.layers
+    if layer.id = id
+      found = yes
+      break
+    i++
+  return global.layers[i]
 
 global.addUrlLayer = (url) ->
   img = new Image()

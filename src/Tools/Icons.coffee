@@ -19,3 +19,5 @@ global.tools.getIcon = (name) ->
 global.tools.getCursor = (name) ->
   global.assert Icons.hasOwnProperty name
   return Icons["name"].cursor
+
+global.tools.tools = [global.tools.Pencil]

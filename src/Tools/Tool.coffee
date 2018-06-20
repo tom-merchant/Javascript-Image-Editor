@@ -7,10 +7,11 @@ Tom Merchant 2018
 #include <jdefs.h>
 
 class global.tools.Tool
-  constructor: (@name, @icon, @description, @cursor) ->
+  constructor: (@name, @icon, @description, @cursor, @layer, @editType) ->
     @x = global.canvasMouse.x
     @y = global.canvasMouse.y
-  
+    @history = []
+
   begin: ->
     @x = global.canvasMouse.x
     @y = global.canvasMouse.y
@@ -19,8 +20,10 @@ class global.tools.Tool
   update: ->
     @dx = @x - global.canvasMouse.x
     @dy = @y - global.canvasMouse.y
-    @x += @dx
-    @y += @dy
 
   end: ->
+    global.history.push {type: @editType, id: @layer.id, data: @history}
+    @history = []
     return
+
+global.tools.tools = [global.tools.Pencil]

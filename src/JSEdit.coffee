@@ -3,6 +3,7 @@
 createNamespace(filter)
 createNamespace(tools)
 
+#include "History/History.coffee"
 #include "Props.coffee"
 #include "Control.coffee"
 #include "Utility.coffee"
@@ -30,8 +31,6 @@ global.rendered.height = 1
 
 unless global.ctx?
   alert("Browser not supported!")
-
-global.history = []
 
 global.filters = []
 
