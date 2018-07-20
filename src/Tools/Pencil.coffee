@@ -28,3 +28,5 @@ class global.tools.Pencil extends global.tools.Tool
 
   setColour: (@colour) ->
     return
+
+global.tools.tools.push new global.tools.Pencil

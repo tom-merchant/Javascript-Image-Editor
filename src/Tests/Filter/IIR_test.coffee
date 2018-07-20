@@ -14,7 +14,7 @@ img = document.createElement("img")
 
 img.onload = ->
     global.ctx.drawImage img, 0, 0
-    filter = global.filter.createBiquad "blur", 20
+    filter = global.filter.createIIR 20
     data = global.ctx.getImageData(0, 0, 1000, 1000)
     filtered = global.filter.applyFilter filter, data
     console.log filtered

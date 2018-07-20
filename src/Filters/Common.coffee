@@ -8,7 +8,6 @@ Tom Merchant 2018
 #include "../Maths.coffee"
 #include "../Utility.coffee"
 #include "IIRFilter.coffee"
-#include "Biquad.coffee"
 
 global.filter.kernelCache = {}
 
@@ -161,14 +160,6 @@ global.filter.applyFilter = (filter, data) ->
       newData.data[len + 2] = newDataArr[len + 2]
       newData.data[len + 3] = newDataArr[len + 3]
   return newData
-
-global.filter.createBiquad = (type, radius) ->
-  ###
-  This filter is a bit tricky, it will produce artifacts at
-  resonance values above about 0.5, 0.4 seems to produce accurate
-  results
-  ###
-  return new global.filter.Biquad(1 / (radius / global.dpi), global.dpi / 2, 0.4, type)
 
 global.filter.createIIR = (radius) ->
   return new global.filter.IIR(radius / 3)

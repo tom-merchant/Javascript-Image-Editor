@@ -28,7 +28,8 @@
 			</tr>
 			<tr>
 				<td id="tools">
-
+					<table id="tool-table">	
+					</table>
 				</td>
 				<td id="frame" colspan="2">
 					<canvas id="cnv" width="1024px" height="800px">
@@ -100,21 +101,11 @@
 						<td>
 							<h2>Set parameters</h2>
 							<br>
-							Gaussian: <input type="radio" name="blur-type" value="gaussian" checked></input>
-							<br>
-							Lowpass: <input type="radio" name="blur-type" value="lowpass"></input>
-							<br>
-							<br>
-							<br>
-							<div id="gaussian-options" class="bluroption" hidden>
-								radius: <input type="number" name="blur-radius" min="1.5" max="200" value="3" step="0.5" id="gaussian-blur-radius"></input>
-							</div>
-							<div id="lowpass-options" class="bluroption" hidden>
-								radius: <input type="number" name="blur-radius" min="1.5" max="200" value="3" step="0.5" id="lowpass-blur-radius"></input>
-							</div>
+							radius: <input type="number" min="1.5" max="200" value="3" step="0.5" id="blur-radius"></input>
 							<br>
 							<br>
 							Apply to:
+							<br>
 							<br>
 							Whole Image: <input type="radio" name="blur-target" value="image" checked></input>
 							<br>
@@ -138,29 +129,15 @@
 						<td>
 							<h2>Set parameters</h2>
 							<br>
-							Unsharp: <input type="radio" name="sharpen-type" value="unsharp" checked></input>
-							<br>
-							Sharpen: <input type="radio" name="sharpen-type" value="sharpen"></input>
-							<br>
-							Biquad: <input type="radio" name="sharpen-type" value="biquad"></input>
-							<br>
-							<br>
-							<div id="unsharp-options" class="sharpenoption" hidden>
-								radius: <input type="number" name="sharpen-radius" min="1.5" max="200" value="3" step="0.5" id="unsharp-sharpen-radius"></input>
-							</div>
-							<div id="sharpen-options" class="sharpenoption" hidden>
-								radius: <input type="number" name="sharpen-radius" min="1.5" max="200" value="3" step="0.5" id="sharpen-sharpen-radius"></input>
-							</div>
-							<div id="biquad-options" class="sharpenoption" hidden>
-								radius: <input type="number" name="sharpen-radius" min="1.5" max="200" value="3" step="0.5" id="biquad-sharpen-radius"></input>
-							</div>
+							radius: <input type="number" min="1.5" max="200" value="3" step="0.5" id="sharpen-radius"></input>
 							<br>
 							<br>
 							Apply to:
 							<br>
-							Whole Image: <input type="radio" name="blur-target" value="image" checked></input>
 							<br>
-							Current Layer: <input type="radio" name="blur-target" value="layer"></input>
+							Whole Image: <input type="radio" name="sharpen-target" value="image" checked></input>
+							<br>
+							Current Layer: <input type="radio" name="sharpen-target" value="layer"></input>
 							<br>
 							<br>
 							<button class="close" id="filter-sharpen-apply">Apply</button>

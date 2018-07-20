@@ -26,4 +26,4 @@ class global.tools.Tool
     @history = []
     return
 
-global.tools.tools = [global.tools.Pencil]
+global.tools.tools = []
