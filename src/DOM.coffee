@@ -1,70 +1,82 @@
 #include <jdefs.h>
 #include "Filters/Filters.coffee"
 #include "Tools/Tool.coffee"
+#include "Tools/Pencil.coffee"
 
 ###
 Contains all DOM events
 ###
 global.menuOpen = {}
 
-btnOpen = document.getElementById "mnu-file-open"
-openModal = document.getElementById "open-file-modal"
-openClose = document.getElementById "open-close"
-openOpen = document.getElementById "open-open"
-fileInput = document.getElementById "file-input"
+getElem = document.getElementById.bind document
 
-btnOpenUrl = document.getElementById "mnu-url-open"
-openUrlModal = document.getElementById "open-url-modal"
-urlOpen = document.getElementById "open-url-open"
-urlClose = document.getElementById "open-url-close"
-urlInput = document.getElementById "url-input"
+btnOpen = getElem "mnu-file-open"
+openModal = getElem "open-file-modal"
+openClose = getElem "open-close"
+openOpen = getElem "open-open"
+fileInput = getElem "file-input"
 
-btnFilter = document.getElementById "select-filter"
-filterModal = document.getElementById "filter-modal"
-fltSelect = document.getElementById "filter-select-apply"
-fltClose = document.getElementById "filter-select-cancel"
-fltType = document.getElementById "filter-type"
+btnOpenUrl = getElem "mnu-url-open"
+openUrlModal = getElem "open-url-modal"
+urlOpen = getElem "open-url-open"
+urlClose = getElem "open-url-close"
+urlInput = getElem "url-input"
 
-blurModal = document.getElementById "filter-blur-modal"
-blurCancel = document.getElementById "filter-blur-cancel"
-blurApply = document.getElementById "filter-blur-apply"
+btnFilter = getElem "select-filter"
+filterModal = getElem "filter-modal"
+fltSelect = getElem "filter-select-apply"
+fltClose = getElem "filter-select-cancel"
+fltType = getElem "filter-type"
 
-sharpenModal = document.getElementById "filter-sharpen-modal"
-sharpenCancel = document.getElementById "filter-sharpen-cancel"
-sharpenApply = document.getElementById "filter-sharpen-apply"
+blurModal = getElem "filter-blur-modal"
+blurCancel = getElem "filter-blur-cancel"
+blurApply = getElem "filter-blur-apply"
 
-blurRadius = document.getElementById "blur-radius"
+sharpenModal = getElem "filter-sharpen-modal"
+sharpenCancel = getElem "filter-sharpen-cancel"
+sharpenApply = getElem "filter-sharpen-apply"
 
-sharpenRadius = document.getElementById "sharpen-radius"
+blurRadius = getElem "blur-radius"
+blurRadiusText = getElem "blur-radius-display"
 
-blurCanvas = document.getElementById "blurCanvas"
+sharpenRadius = getElem "sharpen-radius"
+sharpenRadiusText = getElem "sharpen-radius-display"
 
-sharpenCanvas = document.getElementById "sharpenCanvas"
+blurCanvas = getElem "blurCanvas"
 
-toolTable = document.getElementById "tool-table"
+sharpenCanvas = getElem "sharpenCanvas"
+
+toolTable = getElem "tool-table"
 toolTableCols = 2
-toolTableRows = global.tools.tools.length / toolTableCols
+toolTableRows = Math.ceil(global.tools.tools.length / toolTableCols)
 
-bindRadiusChange = (elem, modal, flt, canvas)->
+###
+Updates the output of the filter being configured when the radius changes
+###
+bindRadiusChange = (elem, modal, flt, canvas, disp)->
   elem.onchange = ((e) ->
     unless @modal.getAttribute "hidden"
       val = @elem.value
+      @disp.innerText = val
       global.applyFilter @flt, global.rendered, global.tmp, options={radius: val}
       global.copyToCanvas @canvas, src=global.tmp, scale=0.5
-  ).bind {elem: elem, modal: modal, flt: flt, canvas: canvas}
+  ).bind {elem: elem, modal: modal, flt: flt, canvas: canvas, disp: disp}
 
+###
+Creates a HTML element which represents a button with a tooltip and an icon
+###
 createIconButton = (icon, name, tooltip) ->
   div = document.createElement "div"
   btn = document.createElement "button"
   tooltipDiv = document.createElement "div"
-  img = document.createElement "img"
   ###Create button with icon###
   div.classList += "iconbtn"
   tooltipDiv.classList += "tooltip"
   btn.id = "tool" + name
-  img.src = icon
+  btn.style.backgroundImage = "url('" + icon + "')"
+  btn.style.width = "50px"
+  btn.style.height = "50px"
   tooltipDiv.innerText = tooltip
-  btn.appendChild img
   div.appendChild btn
   div.appendChild tooltipDiv
   return div
@@ -75,8 +87,8 @@ Sets up the menu buttons defined in the document
 ###
 addMenu = (str) ->
   global.menuOpen[str] = no
-  mnuBtn = document.getElementById "mnu-" + str
-  mnuBtns = document.getElementById "mnu-" + str + "-btns"
+  mnuBtn = getElem "mnu-" + str
+  mnuBtns = getElem "mnu-" + str + "-btns"
 
   mnuBtn.onclick = ((mnuBtns) ->
     unless global.menuOpen[@str]
@@ -93,12 +105,15 @@ addMenu = (str) ->
     if e.target isnt @mnuBtn and global.menuOpen[@str]
       global.menuOpen[@str] = no
       @mnuBtns.setAttribute "hidden", yes
-    ).bind({mnuBtn: mnuBtn, mnuBtns: mnuBtns, str: str})
+    ).bind {mnuBtn: mnuBtn, mnuBtns: mnuBtns, str: str}
 
-addFilterApply = (btn, type, modal) ->
+###
+Mechanism for applying filter configurations
+###
+addFilterApply = (btn, type, modal, slider) ->
   btn.onclick = (->
     applyTo = document.querySelector("input[name=" + @type + "-target]:checked").value
-    radius = document.getElementById(@type + "-radius").value
+    radius = @slider.value
     filter =
       type: @type
       options:
@@ -120,7 +135,7 @@ addFilterApply = (btn, type, modal) ->
       type: filter.type
       radius: filter.options.radius
     @modal.setAttribute "hidden", yes
-    ).bind({type: type, modal: modal})
+    ).bind {type: type, modal: modal, slider: slider}
 
 
 ###
@@ -151,7 +166,7 @@ openOpen.onclick = ->
     file = fileInput.files[0]
     reader = new FileReader()
     reader.onload = global.addFileLayer
-    reader.onerror = (-> global.assert false, "Failed to load " + @file).bind({src: file})
+    reader.onerror = (-> global.assert false, "Failed to load " + @src).bind({src: file})
     reader.readAsDataURL file
     fileInput.value = null
     openModal.setAttribute "hidden", yes
@@ -169,16 +184,16 @@ fltClose.onclick = ->
 fltSelect.onclick = ->
   type = document.querySelector("input[name=filter-type]:checked").value
   filterModal.setAttribute "hidden", yes
-  document.getElementById("filter-" + type + "-modal").removeAttribute "hidden"
+  getElem("filter-" + type + "-modal").removeAttribute "hidden"
   modalCanvas = document.querySelector("#filter-" + type + "-modal canvas")
   modalCanvas.width = global.cnv.width / 2
   modalCanvas.height = global.cnv.height / 2
   switch type
     when "blur"
-      global.applyFilter "blur", global.rendered, global.tmp, options={radius: document.getElementById("blur-radius").value}
+      global.applyFilter "blur", global.rendered, global.tmp, options={radius: getElem("blur-radius").value}
       break
     when "sharpen"
-      global.applyFilter "sharpen", global.rendered, global.tmp, options={radius: document.getElementById("sharpen-radius").value}
+      global.applyFilter "sharpen", global.rendered, global.tmp, options={radius: getElem("sharpen-radius").value}
       break
   global.copyToCanvas modalCanvas, src=global.tmp, scale=0.5
 
@@ -194,7 +209,7 @@ for i from [0..toolTableRows]
   for j from [0..toolTableCols]
     if global.tools.tools[k]?
       newCol = document.createElement "td"
-      newcol.appendChild createIconButton global.tools.tools[k].icon, global.tools.tools[k].name, global.tools.tools[k].description
+      newCol.appendChild createIconButton global.tools.tools[k].icon, global.tools.tools[k].name, global.tools.tools[k].description
       currentRow.append newCol
     k++
   toolTable.appendChild currentRow
@@ -203,9 +218,9 @@ for element in document.querySelectorAll "input[name=blur-type]"
   element.onclick = (->
     for elem in document.querySelectorAll ".bluroption"
       elem.setAttribute "hidden", yes
-    document.getElementById(@value + "-options").removeAttribute "hidden"
+    getElem(@value + "-options").removeAttribute "hidden"
     ###Apply with default settings###
-    global.applyFilter @value + "blur", global.rendered, global.tmp, options={radius: document.getElementById(@value + "-blur-radius").value}
+    global.applyFilter @value + "blur", global.rendered, global.tmp, options={radius: getElem(@value + "-blur-radius").value}
     global.copyToCanvas blurCanvas, src=global.tmp, scale=0.5
     ).bind element
 
@@ -213,9 +228,9 @@ for element in document.querySelectorAll "input[name=sharpen-type]"
   element.onclick = (->
     for elem in document.querySelectorAll ".sharpenoption"
       elem.setAttribute "hidden", yes
-    document.getElementById(@value + "-options").removeAttribute "hidden"
+    getElem(@value + "-options").removeAttribute "hidden"
     ###Apply with default settings###
-    global.applyFilter @value + "sharpen", global.rendered, global.tmp, options={radius: document.getElementById(@value + "-sharpen-radius").value}
+    global.applyFilter @value + "sharpen", global.rendered, global.tmp, options={radius: getElem(@value + "-sharpen-radius").value}
     global.copyToCanvas sharpenCanvas, src=global.tmp, scale=0.5
     ).bind element
 
@@ -240,8 +255,8 @@ addMenu "edit"
 addMenu "view"
 addMenu "help"
 
-bindRadiusChange blurRadius, blurModal, "blur", blurCanvas
-bindRadiusChange sharpenRadius, sharpenModal, "sharpen", sharpenCanvas
+bindRadiusChange blurRadius, blurModal, "blur", blurCanvas, blurRadiusText
+bindRadiusChange sharpenRadius, sharpenModal, "sharpen", sharpenCanvas, sharpenRadiusText
 
-addFilterApply blurApply, "blur", blurModal
-addFilterApply sharpenApply, "sharpen", sharpenModal
+addFilterApply blurApply, "blur", blurModal, blurRadius
+addFilterApply sharpenApply, "sharpen", sharpenModal, sharpenRadius

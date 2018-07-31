@@ -11,7 +11,6 @@ createNamespace(tools)
 #include "Mouse.coffee"
 #include "Keyboard.coffee"
 #include "Layer.coffee"
-#include "DOM.coffee"
 
 global.cnv = document.getElementById "cnv"
 global.ctx = global.cnv.getContext "2d"
@@ -54,3 +53,5 @@ global.mouse.addScrollHandler (e) ->
   else
     global.pan(e.deltaX, e.deltaY)
   global.reframe()
+
+#include "DOM.coffee"

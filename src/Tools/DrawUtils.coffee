@@ -1,3 +1,4 @@
+#pragma once
 
 drawLine = (x, y, dx, dy, colour, layer, list=[]) ->
   gradient = @dy / @dx
