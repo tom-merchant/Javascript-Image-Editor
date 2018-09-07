@@ -30,7 +30,7 @@ class global.tools.Tool
   end: =>
     @active = no
     if @layer?
-      global.history.push {type: @editType, id: @layer.id, data: @history}
+      global.history.push {type: @editType, id: @layer.id, data: JSON.parse JSON.stringify @history}
     @history = []
     return
 

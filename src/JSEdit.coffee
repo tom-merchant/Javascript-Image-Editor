@@ -3,13 +3,13 @@
 createNamespace(filter)
 createNamespace(tools)
 
+#include "Keyboard.coffee"
 #include "History/History.coffee"
 #include "Props.coffee"
 #include "Control.coffee"
 #include "Utility.coffee"
 #include "Composition/Composite.coffee"
 #include "Mouse.coffee"
-#include "Keyboard.coffee"
 #include "Composition/Layer.coffee"
 #include "Composition/ImageLayer.coffee"
 #include "Filters/Filters.coffee"

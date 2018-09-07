@@ -23,5 +23,11 @@ global.addKeyDownHandler = (f) ->
 global.addKeyUpListener = (f) ->
 	keyUpHandlers.push f
 
+global.isKeyDown = (key) ->
+	if keyStates[key]?
+		return keyStates[key]
+	else
+		return false
+
 window.addEventListener("keydown", global.onKeyDown)
 window.addEventListener("keyup", global.onKeyUp)

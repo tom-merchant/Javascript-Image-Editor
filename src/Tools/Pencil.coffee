@@ -19,6 +19,7 @@ class global.tools.Pencil extends global.tools.Tool
     super startx, starty
     @layer = global.getLayer(global.selectedLayer)
     @history.push @layer.setPixel(@x, @y, @colour)
+    global.composite()
 
   update: (newx, newy) ->
     super(newx, newy)

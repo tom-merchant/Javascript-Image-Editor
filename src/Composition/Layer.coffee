@@ -51,9 +51,21 @@ class Layer
       options: options
 
   ###
+  Like setPixel but for undoing so the change isnt recorded in history
+  and processing power is not wasted
+  ###
+  commitPixel: (x, y, color) ->
+    pos = (y * @canvas.width + x) * 4
+    @raster.data[pos] = color[0]
+    @raster.data[pos + 1] = color[1]
+    @raster.data[pos + 2] = color[2]
+    @raster.data[pos + 3] = color[3]
+    @upToDate = no
+
+  ###
   Sets a given pixel to a given colour in this layers overlay raster
 
-  @return [String] The old pixel in string form {x, y, r, g, b, a, newr, newg, newb, newa}
+  @return [Object] The old pixel in object form {x, y, r, g, b, a, newr, newg, newb, newa}
   ###
   setPixel: (x, y, color) ->
     pos = (y * @canvas.width + x) * 4
@@ -68,10 +80,7 @@ class Layer
       newg: color[1]
       newb: color[2]
       newa: color[3]
-    @raster.data[pos] = color[0]
-    @raster.data[pos + 1] = color[1]
-    @raster.data[pos + 2] = color[2]
-    @raster.data[pos + 3] = color[3]
+    @commitPixel x, y, color
     ###
     oldx = 0
     oldy = 0
@@ -98,7 +107,6 @@ class Layer
     else if y >= (oldy + @outdatedBounds[3])
       @outdatedBounds[3] += y - (oldy + @outdatedBounds[3])
     ###
-    @upToDate = no
     return oldData
 
   move: (deltas) ->
