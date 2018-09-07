@@ -1,3 +1,5 @@
+#pragma once
+#include <jdefs.h>
 
 class global.Mouse
   mouseleft = 1
@@ -30,16 +32,16 @@ class global.Mouse
     @m2down = ((e.buttons & mouseright) == mouseright)
 
   onMouseDown: (e) =>
-    @checkBtns(e)
+    @checkBtns e
 
     for i in @btnDownHandlers
-      i e
+      i e, e.button
 
   onMouseUp: (e) =>
-    @checkBtns(e)
+    @checkBtns e
 
     for i in @btnUpHandlers
-      i e
+      i e, e.button
 
   onMouseWheel: (e) =>
     e.preventDefault()
@@ -61,7 +63,7 @@ class global.Mouse
   addButtonReleaseHandler: (f) ->
     @btnUpHandlers.push f
 
-  addButtonPresshandler: (f) ->
+  addButtonPressHandler: (f) ->
     @btnDownHandlers.push f
 
   addScrollHandler: (f) ->

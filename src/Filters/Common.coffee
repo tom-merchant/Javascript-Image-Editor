@@ -1,3 +1,4 @@
+#pragma once
 ###
 Common utilities for implementing image filters
 

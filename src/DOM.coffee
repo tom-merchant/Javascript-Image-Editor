@@ -1,7 +1,5 @@
+#pragma once
 #include <jdefs.h>
-#include "Filters/Filters.coffee"
-#include "Tools/Tool.coffee"
-#include "Tools/Pencil.coffee"
 
 ###
 Contains all DOM events
@@ -137,6 +135,16 @@ addFilterApply = (btn, type, modal, slider) ->
     @modal.setAttribute "hidden", yes
     ).bind {type: type, modal: modal, slider: slider}
 
+###
+Mechanism for handling toolbar button presses
+###
+onToolSwap = ->
+  if global.activeTool?
+    ###
+    Make sure we finish any action being performed
+    ###
+    global.activeTool.end()
+  global.activeTool = @
 
 ###
 File Menu
@@ -209,7 +217,9 @@ for i from [0..toolTableRows]
   for j from [0..toolTableCols]
     if global.tools.tools[k]?
       newCol = document.createElement "td"
-      newCol.appendChild createIconButton global.tools.tools[k].icon, global.tools.tools[k].name, global.tools.tools[k].description
+      toolButton = createIconButton global.tools.tools[k].icon, global.tools.tools[k].name, global.tools.tools[k].description
+      toolButton.addEventListener "click", onToolSwap.bind global.tools.tools[k]
+      newCol.appendChild toolButton
       currentRow.append newCol
     k++
   toolTable.appendChild currentRow
@@ -240,6 +250,11 @@ global.addKeyDownHandler (k) ->
       openOpen.onclick()
     else if !openUrlModal.getAttribute "hidden"
       urlOpen.onclick()
+  else if k is "Escape"
+    if !openModal.getAttribute "hidden"
+      openClose.onclick()
+    else if !openUrlModal.getAttribute "hidden"
+      urlClose.onclick()
 
 window.addEventListener "click", (e) ->
   if e.target is openModal

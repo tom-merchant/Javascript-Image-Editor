@@ -1,3 +1,4 @@
+#pragma once
 #include <jdefs.h>
 
 keyStates =

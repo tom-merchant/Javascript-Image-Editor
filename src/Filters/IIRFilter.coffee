@@ -1,3 +1,5 @@
+#pragma once
+
 ###
 Implementation of Young and Van Vliet s recursive Gaussian filter
 https://www.researchgate.net/publication/222453003_Recursive_implementation_of_the_Gaussian_filter

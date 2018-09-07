@@ -74,14 +74,29 @@ div>.tooltip
 
 	position: absolute;
 	z-index: 1;
-	bottom: 100%;
+	left: 100%;
+	top: 0%;
 	border: 1px solid black;
 	float: left;
+	background-color: #888;
+	width: 100px;
 }
 
 div:hover>.tooltip
 {
-	display: inherit;
+	display: block;
 }
 
 [hidden] { display: none; }
+
+#tool-table
+{
+	height: 800px;
+}
+
+#tool-table tr
+{
+	padding-top: none;
+	position: relative;
+	display: block;
+}

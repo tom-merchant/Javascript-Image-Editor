@@ -1,3 +1,4 @@
+#pragma once
 #include <jdefs.h>
 #include "Blur.coffee"
 #include "Common.coffee"

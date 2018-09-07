@@ -8,21 +8,29 @@ Tom Merchant 2018
 
 class global.tools.Tool
   constructor: (@name, @icon, @description, @cursor, @layer, @editType) ->
-    @x = global.canvasMouse.x
-    @y = global.canvasMouse.y
+    @x = 0
+    @y = 0
     @history = []
+    @active = no
 
-  begin: ->
-    @x = global.canvasMouse.x
-    @y = global.canvasMouse.y
+  begin: (startx, starty) =>
+    if @active
+      @end()
+    @active = yes
+    @x = startx
+    @y = starty
     return
 
-  update: ->
-    @dx = @x - global.canvasMouse.x
-    @dy = @y - global.canvasMouse.y
+  update: (newx, newy) =>
+    unless @active
+      return
+    @dx = newx - @x
+    @dy = newy - @y
 
-  end: ->
-    global.history.push {type: @editType, id: @layer.id, data: @history}
+  end: =>
+    @active = no
+    if @layer?
+      global.history.push {type: @editType, id: @layer.id, data: @history}
     @history = []
     return
 

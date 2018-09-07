@@ -1,3 +1,4 @@
+#pragma once
 #include <jdefs.h>
 #include "Maths.coffee"
 
@@ -31,3 +32,6 @@ global.reframe = ->
   global.ctx.scale(global.scale, global.scale)
   global.ctx.drawImage global.rendered, global.panning[0], global.panning[1]
   global.ctx.restore()
+
+global.transformCoordinates = (x, y) ->
+  return [~~(x * 1/global.scale - global.panning[0]), ~~(y * 1/global.scale - global.panning[1])]

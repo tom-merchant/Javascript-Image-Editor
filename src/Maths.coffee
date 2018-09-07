@@ -1,3 +1,4 @@
+#pragma once
 #include <jdefs.h>
 
 global.clamp = (val, min, max) ->

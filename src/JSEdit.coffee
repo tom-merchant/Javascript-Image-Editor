@@ -7,10 +7,14 @@ createNamespace(tools)
 #include "Props.coffee"
 #include "Control.coffee"
 #include "Utility.coffee"
-#include "Composite.coffee"
+#include "Composition/Composite.coffee"
 #include "Mouse.coffee"
 #include "Keyboard.coffee"
-#include "Layer.coffee"
+#include "Composition/Layer.coffee"
+#include "Composition/ImageLayer.coffee"
+#include "Filters/Filters.coffee"
+#include "Tools/Tool.coffee"
+#include "Tools/Pencil.coffee"
 
 global.cnv = document.getElementById "cnv"
 global.ctx = global.cnv.getContext "2d"
@@ -35,6 +39,8 @@ global.filters = []
 
 global.selectedLayer = 0
 
+global.activeTool = null
+
 global.mouse = new global.Mouse window.document.body
 
 global.canvasMouse = new global.Mouse global.cnv
@@ -45,6 +51,10 @@ global.totalHeight = global.rendered.height
 global.tmp = document.createElement "canvas"
 [global.tmp.width, global.tmp.height] = [global.rendered.width, global.rendered.height]
 
+###
+Handle events pertaining to moving the viewport and zooming
+###
+
 global.mouse.addScrollHandler (e) ->
   if e.ctrlKey
     global.zoom(e.deltaY)
@@ -53,5 +63,21 @@ global.mouse.addScrollHandler (e) ->
   else
     global.pan(e.deltaX, e.deltaY)
   global.reframe()
+
+###
+Handle mouse events pertaining to tool usage
+###
+
+global.canvasMouse.addButtonPressHandler (e, btn) ->
+	if btn is 0 and global.activeTool?
+		global.activeTool.begin(global.transformCoordinates(global.canvasMouse.x, global.canvasMouse.y)...)
+
+global.canvasMouse.addMoveHandler ->
+	if global.activeTool? and global.activeTool.active
+		global.activeTool.update(global.transformCoordinates(global.canvasMouse.x, global.canvasMouse.y)...)
+
+global.canvasMouse.addButtonReleaseHandler (e, btn) ->
+	if btn is 0 and global.activeTool?
+		global.activeTool.end()
 
 #include "DOM.coffee"
