@@ -17,3 +17,9 @@ Returns the value of the gaussian distribution at a particular point
 global.gauss = (point, sigma) ->
   global.assert(sigma > 0, "Standard deviation cannot be negative")
   return 1/(sigma*Math.sqrt(2*Math.PI)) * Math.exp -Math.pow(point, 2)/(2*sigma)
+
+global.avg = (...x) ->
+  sum = 0
+  for i in [0...x.length]
+    sum += x[i]
+  return sum / x.length

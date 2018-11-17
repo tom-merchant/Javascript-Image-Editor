@@ -11,13 +11,20 @@ global.undoneStack = []
 global.history.push = (x...) ->
   global.undoneStack.splice(0)
   global.historyStack.push x...
-  if global.historyStack.length > 100
+  while global.historyStack.length > 100
     global.historyStack.shift()
 
 global.history.undo = ->
   action = global.historyStack.pop()
-  global.history.historyFunctionTable[action.type](action, false)
-  global.undoneStack.push action
+  if action?
+    ###
+    Each type of history element has a "type" field which
+    is the same as the name of a function in the historyFunctionTable
+    I use late binding in order to find the correct undo function at
+    compile time
+    ###
+  	global.history.historyFunctionTable[action.type](action, false)
+  	global.undoneStack.push action
 
 global.history.redo = ->
   action = global.undoneStack.pop()

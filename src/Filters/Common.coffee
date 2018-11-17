@@ -24,24 +24,30 @@ Performs a kernel convolution with the given kernel on the src image data
 
 @return [ImageData] The filtered image data
 ###
-global.filter.applyKernel = (kernel, src) ->
-  newData = global.ctx.createImageData src.width, src.height
+global.filter.applyKernel = (kernel, src, grayscale=no) ->
+  newData = null
+  channels = 4
+
+  unless grayscale
+    newData = global.ctx.createImageData src.width, src.height
+  else
+    newData = []
+    channels = 1
 
   global.filter.kernelCache[[kernel.width, kernel.height, kernel.type, kernel.radius]] ?= {}
 
   cache = global.filter.kernelCache[[kernel.width, kernel.height, kernel.type, kernel.radius]]
 
-  for i in [0...src.width * src.height * 4] by 4
-    x = i % (src.width * 4)
-    y = Math.floor (i / (src.width * 4))
+  for i in [0...src.width * src.height]
+    x = i % (src.width)
+    y = Math.floor (i / (src.width))
 
     newKernel = global.filter.resizeKernel kernel, x, y, src, cache
+    filteredPixel = global.filter.processPixel newKernel, x, y, src, grayscale=grayscale
+    pos = (x + y * src.width) * channels
 
-    filteredPixel = global.filter.processPixel newKernel, x, y, src
-    newData.data[i] = filteredPixel[0]
-    newData.data[i+1] = filteredPixel[1]
-    newData.data[i+2] = filteredPixel[2]
-    newData.data[i+3] = filteredPixel[3]
+    for i in [0...channels]
+      newData.data[pos + i] = filteredPixel[i]
   return newData
 
 global.filter.resizeKernel  = (kernel, x, y, img, cache) ->
@@ -86,11 +92,11 @@ global.filter.resize = (kernel, top_excess, bottom_excess, left_excess, right_ex
   for x in [0...kernel.width]
     for y in [0...kernel.height]
       weight = kernel.data[y * kernel.width + x]
-      unless isNaN(weight)
+      unless isNaN(weight) or weightsum is 0
         weightsum += weight
   for x in [0...kernel.width]
     for y in [0...kernel.height]
-      unless isNaN(kernel.data[y * kernel.width + x])
+      unless isNaN(kernel.data[y * kernel.width + x]) or weightsum is 0
         kernel.data[y * kernel.width + x] /= weightsum
 
 global.filter.clearRow = (kernel, row) ->
@@ -101,24 +107,29 @@ global.filter.clearColumn = (kernel, col) ->
   for y in [0...kernel.height]
     kernel.data[y * kernel.width + col] = NaN
 
-global.filter.processPixel = (kernel, i, j, img) ->
-  sumr = 0
-  sumg = 0
-  sumb = 0
-  suma = 0
+global.filter.processPixel = (kernel, i, j, img, grayscale=no) ->
+  sums = [0, 0, 0, 0]
+  channels = 4
+
+  if grayscale
+    channels = 1
 
   for x in [0...kernel.width]
     for y in [0...kernel.height]
       unless isNaN(kernel.data[y * kernel.width + x])
-        len = (~~(j + y - kernel.height / 2) * img.width + ~~(i + x - kernel.width / 2)) * 4
-        data = [img.data[len], img.data[len+1], img.data[len+2], img.data[len+3]]
+        iy = ~~(j + y - kernel.height / 2)
+        ix =  ~~(i + x - kernel.width / 2)
+        pos = (iy*img.width+ix) * channels
+        data = []
         weight = kernel.data[y * kernel.width + x]
-        sumr += global.ungamma(data[0]) * weight
-        sumg += global.ungamma(data[1]) * weight
-        sumb += global.ungamma(data[2]) * weight
-        suma += global.ungamma(data[3]) * weight
+        for i in [0...channels]
+          data.push img.data[pos+i]
+          sums[i] += global.ungamma(data[i]) * weight
 
-  return [~~global.regamma(sumr), ~~global.regamma(sumg), ~~global.regamma(sumb), ~~global.regamma(suma)]
+  for i in [0...channels]
+    sums[i] = ~~(global.regamma sums[i])
+
+  return sums
 
 ###
 Filter is run forwards and backwards over both axes
@@ -161,6 +172,20 @@ global.filter.applyFilter = (filter, data) ->
       newData.data[len + 2] = newDataArr[len + 2]
       newData.data[len + 3] = newDataArr[len + 3]
   return newData
+
+###
+Only works on grayscale images
+###
+
+global.filter.applyThreshold = (data, width, height, threshold) ->
+  for i in [0...width]
+    for j in [0...height]
+      pos = j * width + i
+      if data[pos] < threshold
+        data[pos] = 0
+      else
+        data[pos] = 255
+
 
 global.filter.createIIR = (radius) ->
   return new global.filter.IIR(radius / 3)

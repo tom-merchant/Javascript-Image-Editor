@@ -9,11 +9,11 @@ class global.Mouse
   mousefive = 16
 
   constructor: (@refElem) ->
-    [@pageX, @pageY, @x, @y] = [0, 0, 0, 0]
+    @pageX = @pageY = @x = @y = 0
     [@moveHandlers, @btnUpHandlers, @btnDownHandlers, @scrollHandlers] = [[], [], [], []]
     @oldElem = @refElem
     [@elemRect, @hasScrolled] = [null, no]
-    [@m1down, @m2down] = [no, no]
+    @m1down = @m2down = no
 
     @refElem.addEventListener("mousemove", @onMouseMove)
     @refElem.addEventListener("mouseup", @onMouseUp)

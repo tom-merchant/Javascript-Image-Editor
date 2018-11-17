@@ -15,6 +15,8 @@ createNamespace(tools)
 #include "Filters/Filters.coffee"
 #include "Tools/Tool.coffee"
 #include "Tools/Pencil.coffee"
+#include "Tools/Brush.coffee"
+#include "Tools/Rubber.coffee"
 
 global.cnv = document.getElementById "cnv"
 global.ctx = global.cnv.getContext "2d"
@@ -63,6 +65,8 @@ global.mouse.addScrollHandler (e) ->
   else
     global.pan(e.deltaX, e.deltaY)
   global.reframe()
+  if global.shouldDrawGrid and global.scale >= 12
+    global.drawPixelGrid()
 
 ###
 Handle mouse events pertaining to tool usage
@@ -73,7 +77,7 @@ global.canvasMouse.addButtonPressHandler (e, btn) ->
 		global.activeTool.begin(global.transformCoordinates(global.canvasMouse.x, global.canvasMouse.y)...)
 
 global.canvasMouse.addMoveHandler ->
-	if global.activeTool? and global.activeTool.active
+	if global.activeTool?
 		global.activeTool.update(global.transformCoordinates(global.canvasMouse.x, global.canvasMouse.y)...)
 
 global.canvasMouse.addButtonReleaseHandler (e, btn) ->

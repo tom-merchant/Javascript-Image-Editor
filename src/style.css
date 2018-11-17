@@ -67,6 +67,10 @@
 	background-color: #888;
 }
 
+.iconbtn btn
+{
+	background-size: 50px 50px;
+}
 
 div>.tooltip
 {

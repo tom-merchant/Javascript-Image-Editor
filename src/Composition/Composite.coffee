@@ -1,5 +1,6 @@
 #pragma once
 #include "jdefs.h"
+#include "../Tools/PixelGrid.coffee"
 
 global.composite = ->
   global.rctx.clearRect(0, 0, global.rendered.width, global.rendered.height)
@@ -11,3 +12,5 @@ global.composite = ->
     global.rctx.drawImage l.canvas, l.x, l.y
   global.rctx.restore() # Return to the untransformed state
   global.reframe()
+  if global.shouldDrawGrid and global.scale >= 12
+    global.drawPixelGrid()

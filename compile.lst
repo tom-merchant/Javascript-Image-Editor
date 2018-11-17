@@ -1,2 +1,3 @@
 src/JSEdit.coffee
 src/Tests/Filter/IIR_test.coffee
+src/Tests/Filter/canny_test.coffee

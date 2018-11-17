@@ -8,7 +8,6 @@ global.layerId = 0
 class Layer
   constructor: (dimensions, type) ->
     @canvas = document.createElement 'canvas'
-    @canvas2 = document.createElement 'canvas'
 
     if dimensions[0] > global.totalWidth
       global.totalWidth = dimensions[0]
@@ -21,14 +20,12 @@ class Layer
     global.tmp.height = global.totalHeight
 
     [@canvas.width, @canvas.height] = dimensions
-    [@canvas2.width, @canvas2.height] = dimensions
     @ctx = @canvas.getContext '2d'
-    @ctx2 = @canvas2.getContext '2d'
     @type = type #Text, raster, shape, etc
     ###
     X and Y are used when compositing the image, not when rendering the layer (ease of implementation)
     ###
-    [@x, @y, @rotation] = [0, 0, 0]
+    @x = @y = @rotation = 0
     @id = global.layerId++
     @blendMode = "source-over"
     @filters = []
@@ -80,6 +77,8 @@ class Layer
       newg: color[1]
       newb: color[2]
       newa: color[3]
+    if oldData.r is oldData.newr and oldData.g is oldData.newg and oldData.b = oldData.newb and oldData.a is oldData.newa
+      return null
     @commitPixel x, y, color
     ###
     oldx = 0
@@ -131,15 +130,13 @@ global.removeLayer = (id) ->
   if so possibly use a binary search
   ###
   for layer in global.layers
-    if layer.id = id
+    if layer.id == id
       found = yes
       break
     i++
   if found
-    global.layers.splice i, 1
+    layer = global.layers.splice i, 1
     global.history.push {type: "delete layer", id: layer.id, position: i, data: JSON.stringify(layer)}
-    if global.history.length >= 50
-      global.history.shift()
   global.composite()
   layerItem = document.getElementById "layer-" + id
   if layerItem?
@@ -162,8 +159,9 @@ global.addLayer = (layer) ->
   layerItem.id = "layer-" + layer.id
   closeBtn.innerText += "x"
   layerItem.innerText += "Layer " + global.layers.length
-  closeBtn.onclick = ->
-    global.removeLayer closeBtn.id.replace("close-layer-", "") #For some reason I can''t just use layer.id or wierd issues occur (thanks javascript)
+  closeBtn.onclick = (->
+    global.removeLayer @id
+    ).bind(layer)
   layerItem.appendChild closeBtn
   layerList.insertBefore layerItem, layerList.firstChild
   layer.redraw()
@@ -179,20 +177,6 @@ global.getLayer = (layerId) ->
     if layer.id is layerId
       return layer
   return undefined
-
-global.addUrlLayer = (url) ->
-  img = new Image()
-  img.src = url
-
-  img.onload = ->
-    global.addLayer new ImgLayer img
-
-  img.onerr = ->
-    alert "could not load that image"
-
-
-global.addFileLayer = (e) ->
-  global.addUrlLayer e.target.result
 
 global.redrawAll  = ->
   for l in global.Layers

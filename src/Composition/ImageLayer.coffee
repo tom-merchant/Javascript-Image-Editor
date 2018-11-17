@@ -5,6 +5,7 @@ class ImgLayer extends Layer
   constructor: (image) ->
     super [image.width, image.height], "raster"
     @img = image
+    @dataCopied = no
 
   redraw: ->
     super()
@@ -25,10 +26,14 @@ class ImgLayer extends Layer
     else
       return false
     ###
-    @ctx.clearRect 0, 0, @canvas.width, @canvas.height
-    @ctx.drawImage @img, 0, 0, @canvas.width, @canvas.height
-    @ctx2.putImageData @raster, 0, 0
-    @ctx.drawImage @canvas2, 0, 0, @canvas.width, @canvas.height
+    if @dataCopied
+      @ctx.putImageData @raster, 0, 0
+    else
+      @ctx.clearRect 0, 0, @canvas.width, @canvas.height
+      @ctx.drawImage @img, 0, 0, @canvas.width, @canvas.height
+      @raster = @ctx.getImageData 0, 0, @canvas.width, @canvas.height
+      @dataCopied = yes
+
 
   resize: (newDimensions) ->
     super.resize newDimensions

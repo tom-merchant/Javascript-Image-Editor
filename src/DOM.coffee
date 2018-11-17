@@ -74,6 +74,7 @@ createIconButton = (icon, name, tooltip) ->
   btn.style.backgroundImage = "url('" + icon + "')"
   btn.style.width = "50px"
   btn.style.height = "50px"
+  btn.style.backgroundSize = "48px 48px"
   tooltipDiv.innerText = tooltip
   div.appendChild btn
   div.appendChild tooltipDiv
@@ -212,9 +213,9 @@ sharpenCancel.onclick = ->
   sharpenModal.setAttribute "hidden", yes
 
 k = 0
-for i from [0..toolTableRows]
+for i from [0...toolTableRows]
   currentRow = document.createElement "tr"
-  for j from [0..toolTableCols]
+  for j from [0...toolTableCols]
     if global.tools.tools[k]?
       newCol = document.createElement "td"
       toolButton = createIconButton global.tools.tools[k].icon, global.tools.tools[k].name, global.tools.tools[k].description

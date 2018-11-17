@@ -14,8 +14,7 @@ freq /= 92
 
 for x in range(92):
     for y in range(92):
-        d = math.sqrt(x*x + y*y)
-        image[x][y] = math.sin(2 * math.pi * freq * d)# + math.sin(2 * math.pi * freq * y)
+        image[x][y] = math.sin(2 * math.pi * freq * x) + math.cos(2 * math.pi * freq * y)
 
 with open("output2.bmp", "wb") as bitmap:
     #ty to http://blog.paphus.com/blog/2012/08/14/write-your-own-bitmaps/

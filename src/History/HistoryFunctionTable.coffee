@@ -7,10 +7,13 @@ global.history.historyFunctionTable =
       unless data.id is "global"
         layer = global.getLayer data.id
         for i in [data.data.length-1..0]
-          layer.commitPixel data.data[i].x, data.data[i].y, [data.data[i].r, data.data[i].g, data.data[i].b, data.data[i].a]
+          ###Ignore null entries###
+          if data.data[i]?
+            layer.commitPixel data.data[i].x, data.data[i].y, [data.data[i].r, data.data[i].g, data.data[i].b, data.data[i].a]
     else
       unless data.id is "global"
         layer = global.getLayer data.id
-        for i in [data.data.length-1..0]
-          layer.commitPixel data.data[i].x, data.data[i].y, [data.data[i].newr, data.data[i].newg, data.data[i].newb, data.data[i].newa]
+        for i in [0..data.data.length-1]
+          if data.data[i]?
+            layer.commitPixel data.data[i].x, data.data[i].y, [data.data[i].newr, data.data[i].newg, data.data[i].newb, data.data[i].newa]
     global.composite()

@@ -7,34 +7,38 @@ Tom Merchant 2018
 ###
 
 #include <jdefs.h>
-#include "DrawUtils.coffee"
+#include "DrawingTool.coffee"
 #include "Icons.coffee"
 
-class global.tools.Pencil extends global.tools.Tool
-  constructor: ->
-    super("Pencil", global.tools.Icons.Pencil.icon, "A pencil tool for drawing", global.tools.Icons.Pencil.cursor, global.getLayer(global.selectedLayer), "raster")
-    @colour = [0, 0, 0, 255]
+###
+All this instantiation is insane
+DrawingTool should be a closure
+infact maybe tool itself should be a closure
+pencil should just be an object defining the methods
+and data that defines a pencil and there should be a
+set_tool function somewhere that mutates the state of the
+tool or drawingtool closure in order to  change the behaviour
+We dont need all these instances
 
-  begin: (startx, starty) ->
-    super startx, starty
-    @layer = global.getLayer(global.selectedLayer)
-    @history.push @layer.setPixel(@x, @y, @colour)
-    global.composite()
+for instance
 
-  update: (newx, newy) ->
-    super(newx, newy)
-    unless @active or @dx+@dy is 0
-      return
-    @history.push drawLine(@x, @y, @dx, @dy, @colour, @layer)...
-    @x += @dx
-    @y += @dy
-    @dy = @dx = 0
-    global.composite()
+pencil =
+    name: "Pencil"
+    icon: "data:png/...."
+    desc: "A pencil tool for drawing"
+    cursor: "data:png/..."
+    type: "raster"
+    color: "foreground"
+    startFunc: drawPixel
+    drawFunc: drawLine
+    size: 1
+###
 
-  end: ->
-  	super()
-
-  setColour: (@colour) ->
-    return
-
-global.tools.tools.push new global.tools.Pencil
+global.tools.tools.push new global.tools.DrawingTool("Pencil",
+    global.tools.Icons.Pencil.icon,
+    "A pencil tool for drawing",
+    global.tools.Icons.Pencil.cursor,
+    global.getLayer(global.selectedLayer),
+    "raster", global.fgColour, drawPixel,
+    drawLine, 1)
+    

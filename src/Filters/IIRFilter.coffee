@@ -2,7 +2,7 @@
 
 ###
 Implementation of Young and Van Vliet s recursive Gaussian filter
-https://www.researchgate.net/publication/222453003_Recursive_implementation_of_the_Gaussian_filter
+https://www.researchgate.net/publication/222453003_Recursive_implementation_of_the_Gaussian_filter, DOI: 10.1016/0165-1684(95)00020-E
 
 Tom Merchant 2018
 ###
@@ -17,7 +17,7 @@ class global.filter.IIR
       q = 0.98711 * sigma - 0.96330
     else
       q = 3.97156 - 4.14554 * Math.sqrt(1 - 0.26891 * sigma)
-    
+
     q2 = q * q
     q3 = q2 * q
 
@@ -30,7 +30,7 @@ class global.filter.IIR
     @d1 = 0
     @d2 = 0
     @d3 = 0
- 
+
   clear: ->
     @d1 = 0
     @d2 = 0

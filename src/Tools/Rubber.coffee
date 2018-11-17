@@ -1,29 +1,20 @@
+#pragma once
+
 ###
 Rubber.coffee
-Implements a rubber tool for erasing
+Implements a rubber tool for erasing pixels
 Tom Merchant 2018
 ###
 
 #include <jdefs.h>
-#include "DrawUtils.coffee"
+#include "DrawingTool.coffee"
+#include "Icons.coffee"
 
-class global.tools.Rubber extends global.tools.Tool
+global.tools.tools.push new global.tools.DrawingTool("Rubber",
+    global.tools.Icons.Rubber.icon,
+    "A rubber tool for erasing pixels",
+    global.tools.Icons.Rubber.cursor,
+    global.getLayer(global.selectedLayer), "raster",
+    [0, 0, 0, 0], drawBlob, drawThickLine,
+    global.brushWidth)
 
-  constructor: () ->
-    super("Rubber", global.tools.getIcon "Rubber", "A Rubber tool for erasing", global.tools.getCursor "Rubber", global.layers[global.selectedLayer], "raster")
-
-  begin: ->
-    @history.push @layer.setPixel(@x, @y, [0, 0, 0, 0])
-  	super
-
-  update: ->
-    super
-    @history.push ...drawLine(@x, @y, @dx, @dy, [0, 0, 0, 0], @layer)
-    @x += @dx
-    @y += @dy
-    @dy = @dx = 0
-
-  end: ->
-  	super
-
-global.tools.tools.push new global.tools.Rubber
