@@ -1,5 +1,11 @@
 #include "jdefs.h"
 
+global.arraySum = (arr) ->
+  sum = 0
+  for v in arr
+    sum += v
+  return sum
+
 global.average = (arr) ->
   sum = 0
   for v in arr

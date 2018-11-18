@@ -31,7 +31,7 @@ global.filter.applyKernel = (kernel, src, grayscale=no) ->
   unless grayscale
     newData = global.ctx.createImageData src.width, src.height
   else
-    newData = []
+    newData = {data: [], width: src.width, height: src.height}
     channels = 1
 
   global.filter.kernelCache[[kernel.width, kernel.height, kernel.type, kernel.radius]] ?= {}
@@ -110,9 +110,9 @@ global.filter.clearColumn = (kernel, col) ->
 global.filter.processPixel = (kernel, i, j, img, grayscale=no) ->
   sums = [0, 0, 0, 0]
   channels = 4
-
   if grayscale
     channels = 1
+    sums = [0]
 
   for x in [0...kernel.width]
     for y in [0...kernel.height]
@@ -120,16 +120,14 @@ global.filter.processPixel = (kernel, i, j, img, grayscale=no) ->
         iy = ~~(j + y - kernel.height / 2)
         ix =  ~~(i + x - kernel.width / 2)
         pos = (iy*img.width+ix) * channels
-        data = []
         weight = kernel.data[y * kernel.width + x]
-        for i in [0...channels]
-          data.push img.data[pos+i]
-          sums[i] += global.ungamma(data[i]) * weight
+        for c in [0...channels]
+          sums[c] += global.ungamma(img.data[pos+c]) * weight
 
-  for i in [0...channels]
-    sums[i] = ~~(global.regamma sums[i])
-
+  for c in [0...channels]
+    sums[c] = ~~Math.min(global.regamma sums[c], 255)
   return sums
+
 
 ###
 Filter is run forwards and backwards over both axes
@@ -173,6 +171,9 @@ global.filter.applyFilter = (filter, data) ->
       newData.data[len + 3] = newDataArr[len + 3]
   return newData
 
+global.filter.createIIR = (radius) ->
+  return new global.filter.IIR(radius / 3)
+
 ###
 Only works on grayscale images
 ###
@@ -185,7 +186,3 @@ global.filter.applyThreshold = (data, width, height, threshold) ->
         data[pos] = 0
       else
         data[pos] = 255
-
-
-global.filter.createIIR = (radius) ->
-  return new global.filter.IIR(radius / 3)

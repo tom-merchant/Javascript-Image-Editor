@@ -1,2 +1,2 @@
 #!/bin/bash
-python compile.py
+python3 compile.py

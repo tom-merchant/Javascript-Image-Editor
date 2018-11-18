@@ -1,3 +1,4 @@
 src/JSEdit.coffee
 src/Tests/Filter/IIR_test.coffee
-src/Tests/Filter/canny_test.coffee
+src/Tests/Filter/edge_detect_test.coffee
+src/Tests/Filter/find_lines.coffee

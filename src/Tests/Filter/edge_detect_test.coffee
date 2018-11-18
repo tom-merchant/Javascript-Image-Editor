@@ -15,9 +15,11 @@ img = document.createElement("img")
 img.crossOrigin = "Anonymous";
 
 img.onload = ->
-    global.ctx.drawImage img, 0, 0
-    data = global.ctx.getImageData(0, 0, 512, 512)
-    filtered = global.filter.edgeDetect data, options={threshold: 90, threshold2: 130, smoothing: 4}
-    global.ctx.putImageData filtered, 0, 0
+  global.ctx.drawImage img, 0, 0
+  data = global.ctx.getImageData(0, 0, 512, 512)
+  filtered = (global.filter.edgeDetect data)[0]
+  global.filter.expandSingleChannel filtered, data
+  global.ctx.putImageData data, 0, 0
+
 
 img.src = "lenna.png"
