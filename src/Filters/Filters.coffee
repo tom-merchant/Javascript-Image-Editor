@@ -30,7 +30,7 @@ global.applyFilter = (type, src, dest, options) ->
             ###
             This is an unsharp mask
             The idea is that subtracting the blurred data
-            from the pre-blurred image results in all the
+            from the unblurred image results in all the
             sharp detail which you add back
             ###
             result.data[len] = data.data[len] + (data.data[len] - result.data[len])

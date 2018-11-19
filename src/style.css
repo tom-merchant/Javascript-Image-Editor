@@ -1,9 +1,41 @@
 
+body
+{
+	background-color: #333;
+	color: white;
+}
+
+th
+{
+	font-size: 1em;
+	color: white;
+	border-bottom: 1px solid white;
+}
+
+tfoot td
+{
+	border-top: 1px solid white;
+}
+
+table
+{
+	background-color: #111;
+}
+
+button
+{
+	border: none;
+}
+
 .mnubtn
 {
 	width: 24.7%;
+	height: 25px;
 	border: none;
-	display: inline;
+	border-radius: 2px;
+	display: inline-block;
+	background-color: #222;
+	color: white;
 }
 
 .modal
@@ -25,6 +57,7 @@
 	padding: 10%;
 	border: 1px solid grey;
 	width: 80%;
+	background-color: #222;
 }
 
 .close
@@ -103,4 +136,65 @@ div:hover>.tooltip
 	padding-top: none;
 	position: relative;
 	display: block;
+}
+
+#layers
+{
+	list-style:none;
+	min-width: 100px;
+}
+
+#layers li
+{
+	width: 100%;
+	min-height: 25px;
+	background-color: black;
+	text-align: center;
+	padding-top: 5px;
+}
+
+#layers li button
+{
+	padding-left: 10px;
+	padding-bottom: 2px;
+}
+
+#layers li button:hover
+{
+	padding-left: 10px;
+	color: red;
+}
+
+#layers li select
+{
+	border: none;
+	background-color: black;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+#layers li input
+{
+	border: none;
+	background-color: black;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+#layers li input::before
+{
+	content: '\1F441';
+	color: white;
+}
+
+#layers li input:checked::before
+{
+	color: red;
+}
+
+#layers li[selected]
+{
+	background-color: #222;
 }

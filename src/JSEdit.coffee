@@ -65,7 +65,7 @@ global.mouse.addScrollHandler (e) ->
   else
     global.pan(e.deltaX, e.deltaY)
   global.reframe()
-  if global.shouldDrawGrid and global.scale >= 12
+  if global.shouldDrawGrid and global.scale >= 9
     global.drawPixelGrid()
 
 ###

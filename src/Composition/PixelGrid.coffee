@@ -12,7 +12,7 @@ global.drawPixelGrid = ->
   ###
   offset[0] = (1 - (offset[0] - ~~offset[0])) * global.scale
   offset[1] = (1 - (offset[1] - ~~offset[1])) * global.scale
-  global.ctx.setLineDash [2, 5]
+  global.ctx.setLineDash [2, 2]
   global.ctx.beginPath()
   for i in [0...width+~~offset[0]]
     global.ctx.moveTo -offset[0] + i*global.scale, 0
