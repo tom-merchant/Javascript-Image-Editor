@@ -14,6 +14,7 @@ createNamespace(tools)
 #include "Composition/ImageLayer.coffee"
 #include "Filters/Filters.coffee"
 #include "Tools/Tool.coffee"
+#include "Tools/Pointer.coffee"
 #include "Tools/Pencil.coffee"
 #include "Tools/Brush.coffee"
 #include "Tools/Rubber.coffee"

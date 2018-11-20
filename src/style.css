@@ -198,3 +198,8 @@ div:hover>.tooltip
 {
 	background-color: #222;
 }
+
+select
+{
+	color: white;
+}

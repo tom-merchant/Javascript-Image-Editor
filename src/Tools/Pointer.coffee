@@ -4,6 +4,7 @@ Tom Merchant 2018
 ###
 
 #include <jdefs.h>
+#include "Icons.coffee"
 
 class global.tools.Pointer extends global.tools.Tool
   constructor: () ->
@@ -31,10 +32,12 @@ class global.tools.Pointer extends global.tools.Tool
     super()
     @selecting = no
     @moving = no
-    if @updates is 0 and @selection.reduce(function(a, b) { return a + Math.abs(b)}, 0) isnt 0
+    if @updates is 0 and @selection.reduce((->
+       return a + Math.abs b), 0) isnt 0
+      return
       ###
-      Finalise move and place pixels down onto layer
+      TODO: Finalise move and place pixels down onto layer
       ###
     @updates = 0
 
-global.tools.tools = []
+global.tools.tools.push new global.tools.Pointer

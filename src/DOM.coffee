@@ -145,6 +145,7 @@ onToolSwap = ->
     Make sure we finish any action being performed
     ###
     global.activeTool.end()
+  global.cnv.style.cursor = @.cursor
   global.activeTool = @
 
 ###
@@ -211,6 +212,15 @@ blurCancel.onclick = ->
 
 sharpenCancel.onclick = ->
   sharpenModal.setAttribute "hidden", yes
+
+###
+Applies the selected attribute to the layer
+so the css highlights it
+###
+setActiveLayerDOM = (elem) ->
+  for l in global.layers
+    document.getElementById("layer-" + l.id).removeAttribute "selected"
+  elem.setAttribute "selected", true
 
 k = 0
 for i from [0...toolTableRows]

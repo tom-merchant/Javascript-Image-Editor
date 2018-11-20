@@ -150,15 +150,6 @@ global.removeLayer = (id) ->
     layerItem.parentElement.removeChild layerItem
 
 ###
-Applies the selected attribute to the layer
-so the css highlights it
-###
-setActiveLayerDOM = (elem) ->
-  for l in global.layers
-    document.getElementById("layer-" + l.id).removeAttribute "selected"
-  elem.setAttribute "selected", true
-
-###
 Adds a layer to the layer stack
 
 @param [Layer] the layer to add
