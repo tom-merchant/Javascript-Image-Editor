@@ -18,6 +18,7 @@ createNamespace(tools)
 #include "Tools/Pencil.coffee"
 #include "Tools/Brush.coffee"
 #include "Tools/Rubber.coffee"
+#include "Tools/Text.coffee"
 
 global.cnv = document.getElementById "cnv"
 global.ctx = global.cnv.getContext "2d"

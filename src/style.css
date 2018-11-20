@@ -22,9 +22,32 @@ table
 	background-color: #111;
 }
 
+table table
+{
+	margin: none;
+	padding: none;
+	max-height: 500px;
+}
+
 button
 {
 	border: none;
+}
+
+input[type=color]
+{
+	border: none;
+	max-width: 50px;
+}
+
+.slider
+{
+	max-width: 20px;
+	max-height: 75px;
+	writing-mode: bt-lr;
+  -webkit-appearance: slider-vertical;
+	padding: none;
+	margin: none;
 }
 
 .mnubtn

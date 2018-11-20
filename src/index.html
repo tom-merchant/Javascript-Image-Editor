@@ -30,6 +30,24 @@
 				<td id="tools">
 					<table id="tool-table">
 					</table>
+					<table id="controls">
+						<tr>
+							<td>
+								<input class="slider" type="range" min="0" max="150" value="10" name="brushwidth" orient="vertical">
+							</td>
+							<td>
+								<input class="slider" type="range" min="0.05" max="1" value="1" step="0.05" name="hardness" orient="vertical">
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="color" id="color1" value="#000000">
+							</td>
+							<td>
+								<input type="color" id="color2" value="#FFFFFF">
+							</td>
+						</tr>
+					</table>
 				</td>
 				<td id="frame" colspan="2">
 					<canvas id="cnv" width="1024px" height="800px">
