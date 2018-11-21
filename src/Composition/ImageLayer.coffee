@@ -1,5 +1,6 @@
 #pragma once
 #include <jdefs.h>
+#include "../DOM/Layers.coffee"
 
 class ImgLayer extends Layer
   constructor: (image) ->

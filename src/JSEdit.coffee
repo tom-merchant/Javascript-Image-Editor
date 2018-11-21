@@ -86,4 +86,6 @@ global.canvasMouse.addButtonReleaseHandler (e, btn) ->
 	if btn is 0 and global.activeTool?
 		global.activeTool.end()
 
-#include "DOM.coffee"
+#include "DOM/DOM.coffee"
+#include "DOM/Layers.coffee"
+#include "DOM/Tools.coffee"

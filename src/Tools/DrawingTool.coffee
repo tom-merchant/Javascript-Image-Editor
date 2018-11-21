@@ -22,6 +22,12 @@ class global.tools.DrawingTool extends global.tools.Tool
 
   update: (newx, newy) ->
     super(newx, newy)
+
+    unless global.isKeyDown("Control")
+      @colour = global.fgColour
+    else
+      @colour = global.bgColour
+
     unless @active or @dx+@dy is 0
       @initFunc(@x, @y, @colour, @layer, list=[], brushWidth=@brushWidth, draw=false)
       return

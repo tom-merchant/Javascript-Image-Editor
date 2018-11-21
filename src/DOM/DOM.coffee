@@ -2,11 +2,15 @@
 #include <jdefs.h>
 
 ###
-Contains all DOM events
+TODO: Implement new layer functionality
 ###
+
 global.menuOpen = {}
 
 getElem = document.getElementById.bind document
+
+btnNew = getElem "mnu-file-new"
+newModal = getElem "new-layer-modal"
 
 btnOpen = getElem "mnu-file-open"
 openModal = getElem "open-file-modal"
@@ -44,9 +48,8 @@ blurCanvas = getElem "blurCanvas"
 
 sharpenCanvas = getElem "sharpenCanvas"
 
-toolTable = getElem "tool-table"
-toolTableCols = 2
-toolTableRows = Math.ceil(global.tools.tools.length / toolTableCols)
+colour1 = getElem "colour1"
+colour2 = getElem "colour2"
 
 ###
 Updates the output of the filter being configured when the radius changes
@@ -59,26 +62,6 @@ bindRadiusChange = (elem, modal, flt, canvas, disp)->
       global.applyFilter @flt, global.rendered, global.tmp, options={radius: val}
       global.copyToCanvas @canvas, src=global.tmp, scale=0.5
   ).bind {elem: elem, modal: modal, flt: flt, canvas: canvas, disp: disp}
-
-###
-Creates a HTML element which represents a button with a tooltip and an icon
-###
-createIconButton = (icon, name, tooltip) ->
-  div = document.createElement "div"
-  btn = document.createElement "button"
-  tooltipDiv = document.createElement "div"
-  ###Create button with icon###
-  div.classList += "iconbtn"
-  tooltipDiv.classList += "tooltip"
-  btn.id = "tool" + name
-  btn.style.backgroundImage = "url('" + icon + "')"
-  btn.style.width = "50px"
-  btn.style.height = "50px"
-  btn.style.backgroundSize = "48px 48px"
-  tooltipDiv.innerText = tooltip
-  div.appendChild btn
-  div.appendChild tooltipDiv
-  return div
 
 ###
 Sets up the menu buttons defined in the document
@@ -135,18 +118,6 @@ addFilterApply = (btn, type, modal, slider) ->
       radius: filter.options.radius
     @modal.setAttribute "hidden", yes
     ).bind {type: type, modal: modal, slider: slider}
-
-###
-Mechanism for handling toolbar button presses
-###
-onToolSwap = ->
-  if global.activeTool?
-    ###
-    Make sure we finish any action being performed
-    ###
-    global.activeTool.end()
-  global.cnv.style.cursor = @.cursor
-  global.activeTool = @
 
 ###
 File Menu
@@ -213,27 +184,16 @@ blurCancel.onclick = ->
 sharpenCancel.onclick = ->
   sharpenModal.setAttribute "hidden", yes
 
-###
-Applies the selected attribute to the layer
-so the css highlights it
-###
-setActiveLayerDOM = (elem) ->
-  for l in global.layers
-    document.getElementById("layer-" + l.id).removeAttribute "selected"
-  elem.setAttribute "selected", true
+global.fgColour = global.parseColour(colour1.value)
+global.bgColour = global.parseColour(colour2.value)
 
-k = 0
-for i from [0...toolTableRows]
-  currentRow = document.createElement "tr"
-  for j from [0...toolTableCols]
-    if global.tools.tools[k]?
-      newCol = document.createElement "td"
-      toolButton = createIconButton global.tools.tools[k].icon, global.tools.tools[k].name, global.tools.tools[k].description
-      toolButton.addEventListener "click", onToolSwap.bind global.tools.tools[k]
-      newCol.appendChild toolButton
-      currentRow.append newCol
-    k++
-  toolTable.appendChild currentRow
+colour1.onchange = (->
+  global.fgColour = global.parseColour(@value)
+  ).bind colour1
+
+colour2.onchange = (->
+  global.bgColour = global.parseColour(@value)
+  ).bind colour2
 
 for element in document.querySelectorAll "input[name=blur-type]"
   element.onclick = (->

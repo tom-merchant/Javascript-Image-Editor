@@ -1,3 +1,5 @@
+#pragma once
+
 ###
 Tools.coffee
 Base class for all tools

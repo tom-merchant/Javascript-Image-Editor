@@ -32,19 +32,26 @@
 					</table>
 					<table id="controls">
 						<tr>
+							<!-- TODO: Control tooltips appear at the bottom of the page not by the controls as they should -->
 							<td>
-								<input class="slider" type="range" min="0" max="150" value="10" name="brushwidth" orient="vertical">
+								<div>
+									<input class="slider" id="widthslider" type="range" min="0" max="150" value="10" name="brushwidth" orient="vertical">
+									<div class="tooltip">Adjusts the brush/eraser width</div>
+								</div>
 							</td>
 							<td>
-								<input class="slider" type="range" min="0.05" max="1" value="1" step="0.05" name="hardness" orient="vertical">
+								<div>
+									<input class="slider" id="hardnessslider" type="range" min="0.05" max="1" value="1" step="0.05" name="hardness" orient="vertical">
+									<div class="tooltip">Adjusts the transparency of the brush/eraser</div>
+								</div>
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<input type="color" id="color1" value="#000000">
+								<input type="color" id="colour1" value="#000000">
 							</td>
 							<td>
-								<input type="color" id="color2" value="#FFFFFF">
+								<input type="color" id="colour2" value="#FFFFFF">
 							</td>
 						</tr>
 					</table>
@@ -171,10 +178,23 @@
 				</table>
 			</div>
 		</div>
+		<div id="new-layer-modal" class="modal" hidden>
+			<div class="modal-content">
+				<h2>New Layer</h2>
+				<br>
+				Width:&nbsp;<input type="number" id="new-layer-width" value="1024" min="1"></input>
+				Height:&nbsp;<input type="number" id="new-layer-height" value="1024" min="1"></input>
+				<br>
+				<br>
+				<br>
+				<button class="close" id="filter-sharpen-apply">Apply</button>
+				<button class="close" id="filter-sharpen-cancel">Cancel</button>
+			</div>
+		</div>
 		<div id="mnu-file-btns" class="popup" hidden>
 			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
-					<button class="mnubtn2">New</button>
+					<button class="mnubtn2" id="mnu-file-new">New</button>
 				</li>
 				<li>
 					<button class="mnubtn2" id="mnu-file-open">Open</button>
@@ -183,7 +203,7 @@
 					<button class="mnubtn2" id="mnu-url-open">Open URL</button>
 				</li>
 				<li>
-					<button class="mnubtn2">Save</button>
+					<button class="mnubtn2" id="mnu-file-new">Save</button>
 				</li>
 			</ul>
 		</div>

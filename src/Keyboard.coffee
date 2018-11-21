@@ -8,6 +8,7 @@ keyDownHandlers = []
 keyUpHandlers = []
 
 global.onKeyDown = (e) ->
+	console.log e.key
 	keyStates[e.key] = on
 	for h in keyDownHandlers
 		h(e.key)
