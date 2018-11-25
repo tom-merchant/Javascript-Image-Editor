@@ -36,8 +36,8 @@ global.pan = (dX, dY) ->
 
 
 global.recalcPan = ->
-  global.minpan[0] = -global.totalWidth + (global.cnv.width / global.scale)
-  global.minpan[1] = -global.totalHeight + (global.cnv.height / global.scale)
+  global.minpan[0] = Math.min(-global.totalWidth + (global.cnv.width / global.scale), 0)
+  global.minpan[1] = Math.min(-global.totalHeight + (global.cnv.height / global.scale), 0)
   global.maxpan[0] = 0
   global.maxpan[1] = 0
 
