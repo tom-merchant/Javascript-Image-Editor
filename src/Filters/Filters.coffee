@@ -2,6 +2,7 @@
 #include <jdefs.h>
 #include "Blur.coffee"
 #include "Common.coffee"
+#include "EdgeDetect.coffee"
 
 ###
 Applies the specified filter to src canvas, places it in dest
@@ -11,8 +12,8 @@ Applies the specified filter to src canvas, places it in dest
 @param [Canvas] dest The destination canvas to place the image into
 @param [Object] filter options, the available options depend on the filter
 ###
-global.applyFilter = (type, src, dest, options) ->
-  global.assert(type in ["blur", "sharpen"])
+global.applyFilter = (type, src, dst, options) ->
+  global.assert(type in ["blur", "sharpen", "edgedetect"])
 
   data = src.getContext("2d").getImageData 0, 0, src.width, src.height
   result = null
@@ -35,4 +36,9 @@ global.applyFilter = (type, src, dest, options) ->
             ###
             result.data[len] = data.data[len] + (data.data[len] - result.data[len])
       break
-  dest.getContext("2d").putImageData result, 0, 0
+    when "edgedetect"
+      rawResult = global.filter.edgeDetect data
+      magnitudes = rawResult[0]
+      result = global.filter.expandSingleChannel magnitudes
+      break
+  dst.getContext("2d").putImageData result, 0, 0

@@ -13,5 +13,12 @@ global.composite = ->
       global.rctx.drawImage l.canvas, l.x, l.y
   global.rctx.restore() # Return to the untransformed state
   global.reframe()
+
+global.reframe = ->
+  global.ctx.clearRect(0, 0, global.cnv.width, global.cnv.height)
+  global.ctx.save() # Save the untransformed state
+  global.ctx.scale(global.scale, global.scale)
+  global.ctx.drawImage global.rendered, global.panning[0], global.panning[1]
+  global.ctx.restore()
   if global.shouldDrawGrid and global.scale >= 9
     global.drawPixelGrid()

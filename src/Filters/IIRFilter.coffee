@@ -21,10 +21,17 @@ class global.filter.IIR
     q2 = q * q
     q3 = q2 * q
 
-    @b0 = 1.57825 + 2.44413 * q + 1.4281 * q2 + 0.422205 * q3
-    @b1 = 2.44413 * q + 2.85619 * q2 + 1.26661 * q3
-    @b2 = -(1.4281 * q2 + 1.26661 * q3)
+    ###
+    k has no special meaning Im just using it to avoid
+    calculating this value twice
+    ###
+    k = 1.4281 * q2
+
     @b3 = 0.422205 * q3
+    @b0 = 1.57825 + 2.44413 * q + k + @b3
+    @b1 = 2.44413 * q + 2.85619 * q2 + 1.26661 * q3
+    @b2 = -(k + 1.26661 * q3)
+
     @norm = 1 - ((@b1 + @b2 + @b3)/@b0)
 
     @d1 = 0

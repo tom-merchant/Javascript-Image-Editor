@@ -54,6 +54,15 @@ class Layer
   ###
   commitPixel: (x, y, color) ->
     pos = (y * @canvas.width + x) * 4
+
+    if x > @raster.width or x < 0 or y > @raster.height or y < 0
+      ###
+      Prevents edge wrapping which is the default behaviour
+      for ImageData arrays.
+      FIXME: Do this check in @setPixel and return a value such that it doesnt get comitted to history
+      ###
+      return
+
     @raster.data[pos] = color[0]
     @raster.data[pos + 1] = color[1]
     @raster.data[pos + 2] = color[2]
@@ -151,18 +160,7 @@ global.removeLayer = (id) ->
 
 global.getLayer = (layerId) ->
   found = no
-  ###
-  TODO: determine if layers are always in order already and
-  if so use a binary search
-  ###
   for layer in global.layers
     if layer.id is layerId
       return layer
   return undefined
-
-global.redrawAll  = ->
-  for l in global.Layers
-    l.redraw()
-  ###
-  TODO: composite down on to main canvas (including blending and effects)
-  ###

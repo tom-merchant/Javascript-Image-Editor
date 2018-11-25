@@ -2,7 +2,7 @@
 #include "jdefs.h"
 
 global.gamma = 2.2
-global.panRate = 5
+global.panRate = 10
 global.zoomRate = 0.05
 global.dpi = 96
 global.fgColour = [0, 0, 0, 255]

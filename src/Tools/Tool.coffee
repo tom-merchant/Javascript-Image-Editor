@@ -19,15 +19,15 @@ class global.tools.Tool
     if @active
       @end()
     @active = yes
-    @x = startx
-    @y = starty
+    @x = ~~startx
+    @y = ~~starty
     return
 
   update: (newx, newy) =>
     unless @active
       return
-    @dx = newx - @x
-    @dy = newy - @y
+    @dx = ~~newx - @x
+    @dy = ~~newy - @y
 
   end: =>
     @active = no

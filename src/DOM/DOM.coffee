@@ -1,4 +1,14 @@
 #pragma once
+
+###
+DOM.coffee
+
+Glues the HTML UI and JS state together through DOM events
+and DOM manipulation enabling this application to work.
+
+Tom Merchant 2018
+###
+
 #include <jdefs.h>
 
 ###
@@ -11,6 +21,8 @@ getElem = document.getElementById.bind document
 
 btnNew = getElem "mnu-file-new"
 newModal = getElem "new-layer-modal"
+newCreate = getElem "new-layer-create"
+newCancel = getElem "new-layer-cancel"
 
 btnOpen = getElem "mnu-file-open"
 openModal = getElem "open-file-modal"
@@ -94,37 +106,77 @@ Mechanism for applying filter configurations
 ###
 addFilterApply = (btn, type, modal, slider) ->
   btn.onclick = (->
-    applyTo = document.querySelector("input[name=" + @type + "-target]:checked").value
     radius = @slider.value
     filter =
       type: @type
       options:
         radius: radius
-    isGlobal = no
-    if applyTo is "image"
-      isGlobal = yes
-      global.filters.push filter
-      global.copyToCanvas global.rendered, src=global.tmp
-      global.reframe()
-    else
-      global.selectedLayer.filters.push filter
-      global.selectedLayer.upToDate = no
-      global.composite()
+
+    global.selectedLayer.filters.push filter
+    global.selectedLayer.upToDate = no
+    global.composite()
+
     global.history.push
-      type: "add filter"
-      isGlobal: isGlobal
+      type: "addfilter"
       layer: global.selectedLayer.id
       type: filter.type
       radius: filter.options.radius
     @modal.setAttribute "hidden", yes
     ).bind {type: type, modal: modal, slider: slider}
 
-###
-File Menu
-###
+bindModalOpen = (button, modal) ->
+  button.onclick = (->
+    @.removeAttribute "hidden").bind(modal)
 
-btnOpen.onclick = ->
-  openModal.removeAttribute "hidden"
+bindModalClose = (button, modal) ->
+  button.onclick = (->
+    @.setAttribute "hidden", yes).bind(modal)
+
+
+global.addKeyDownHandler (k) ->
+  if k is "Enter"
+    if !openModal.getAttribute "hidden"
+      openOpen.onclick()
+    else if !openUrlModal.getAttribute "hidden"
+      urlOpen.onclick()
+  else if k is "Escape"
+    if !openModal.getAttribute "hidden"
+      openClose.onclick()
+    else if !openUrlModal.getAttribute "hidden"
+      urlClose.onclick()
+
+window.addEventListener "click", (e) ->
+  if e.target is openModal
+    openModal.setAttribute "hidden", yes
+  else if e.target is openUrlModal
+    openUrlModal.setAttribute "hidden", yes
+  else if e.target is filterModal
+    filterModal.setAttribute "hidden", yes
+  else if e.target is newModal
+    newModal.setAttribute "hidden", yes
+
+addMenu "file"
+addMenu "edit"
+addMenu "view"
+addMenu "help"
+
+addFilterApply blurApply, "blur", blurModal, blurRadius
+addFilterApply sharpenApply, "sharpen", sharpenModal, sharpenRadius
+
+bindRadiusChange blurRadius, blurModal, "blur", blurCanvas, blurRadiusText
+bindRadiusChange sharpenRadius, sharpenModal, "sharpen", sharpenCanvas, sharpenRadiusText
+
+bindModalOpen btnNew, newModal
+bindModalOpen btnOpen, openModal
+bindModalOpen btnOpenUrl, openUrlModal
+bindModalOpen btnFilter, filterModal
+
+bindModalClose fltClose, filterModal
+bindModalClose blurCancel, blurModal
+bindModalClose sharpenCancel, sharpenModal
+bindModalClose newCancel, newModal
+bindModalClose urlClose, openUrlModal
+bindModalClose openClose, openModal
 
 urlOpen.onclick = ->
   if urlInput.value.length > 0
@@ -132,15 +184,6 @@ urlOpen.onclick = ->
     urlInput.value = null
     global.addUrlLayer url
     openUrlModal.setAttribute "hidden", yes
-
-urlClose.onclick = ->
-  openUrlModal.setAttribute "hidden", yes
-
-btnOpenUrl.onclick = ->
-  openUrlModal.removeAttribute "hidden"
-
-openClose.onclick = ->
-  openModal.setAttribute "hidden", yes
 
 openOpen.onclick = ->
   if fileInput.files.length > 0
@@ -151,16 +194,6 @@ openOpen.onclick = ->
     reader.readAsDataURL file
     fileInput.value = null
     openModal.setAttribute "hidden", yes
-
-###
-Edit Menu
-###
-
-btnFilter.onclick = ->
-  filterModal.removeAttribute "hidden"
-
-fltClose.onclick = ->
-  filterModal.setAttribute "hidden", yes
 
 fltSelect.onclick = ->
   type = document.querySelector("input[name=filter-type]:checked").value
@@ -177,15 +210,6 @@ fltSelect.onclick = ->
       global.applyFilter "sharpen", global.rendered, global.tmp, options={radius: getElem("sharpen-radius").value}
       break
   global.copyToCanvas modalCanvas, src=global.tmp, scale=0.5
-
-blurCancel.onclick = ->
-  blurModal.setAttribute "hidden", yes
-
-sharpenCancel.onclick = ->
-  sharpenModal.setAttribute "hidden", yes
-
-global.fgColour = global.parseColour(colour1.value)
-global.bgColour = global.parseColour(colour2.value)
 
 colour1.onchange = (->
   global.fgColour = global.parseColour(@value)
@@ -215,34 +239,13 @@ for element in document.querySelectorAll "input[name=sharpen-type]"
     global.copyToCanvas sharpenCanvas, src=global.tmp, scale=0.5
     ).bind element
 
-global.addKeyDownHandler (k) ->
-  if k is "Enter"
-    if !openModal.getAttribute "hidden"
-      openOpen.onclick()
-    else if !openUrlModal.getAttribute "hidden"
-      urlOpen.onclick()
-  else if k is "Escape"
-    if !openModal.getAttribute "hidden"
-      openClose.onclick()
-    else if !openUrlModal.getAttribute "hidden"
-      urlClose.onclick()
-
-window.addEventListener "click", (e) ->
-  if e.target is openModal
-    openModal.setAttribute "hidden", yes
-  else if e.target is openUrlModal
-    openUrlModal.setAttribute "hidden", yes
-  else if e.target is filterModal
-    filterModal.setAttribute "hidden", yes
-
-
-addMenu "file"
-addMenu "edit"
-addMenu "view"
-addMenu "help"
-
-bindRadiusChange blurRadius, blurModal, "blur", blurCanvas, blurRadiusText
-bindRadiusChange sharpenRadius, sharpenModal, "sharpen", sharpenCanvas, sharpenRadiusText
-
-addFilterApply blurApply, "blur", blurModal, blurRadius
-addFilterApply sharpenApply, "sharpen", sharpenModal, sharpenRadius
+###
+If the browser saves the page state across refreshes
+then we need to load the selected colours, brush widths
+and brush hardnesses
+###
+global.fgColour = global.parseColour(colour1.value)
+global.bgColour = global.parseColour(colour2.value)
+###
+TODO: load brush width and hardness
+###

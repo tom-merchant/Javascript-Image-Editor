@@ -76,11 +76,14 @@ input[type=color]
 .modal-content
 {
 	background-color: white;
-	margin: 10% auto;
-	padding: 10%;
+	padding-left: 3%;
+	padding-bottom: 2%;
+	padding-top: 2%;
+	margin-top: 5%;
 	border: 1px solid grey;
-	width: 80%;
-	background-color: #222;
+	width: 800px;
+	margin-left: 250px;
+	background-color: #111;
 }
 
 .close
@@ -165,6 +168,8 @@ div:hover>.tooltip
 {
 	list-style:none;
 	min-width: 100px;
+	max-height: 1024px;
+	overflow-y: scroll;
 }
 
 #layers li

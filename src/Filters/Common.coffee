@@ -1,5 +1,7 @@
 #pragma once
 ###
+Common.coffee
+
 Common utilities for implementing image filters
 
 Tom Merchant 2018
@@ -128,6 +130,8 @@ global.filter.processPixel = (kernel, i, j, img, grayscale=no) ->
     sums[c] = ~~Math.min(global.regamma sums[c], 255)
   return sums
 
+halfmax = global.ungamma(255) / 2
+global.filter.precalc_ungamma = (global.ungamma(x) / halfmax - 1 for x in [0..255])
 
 ###
 Filter is run forwards and backwards over both axes
@@ -140,7 +144,7 @@ global.filter.applyFilter = (filter, data) ->
     for y in [0...data.height]
       for x in [0...data.width]
         len = (y * data.width + x) * 4
-        px = global.ungamma(data.data[len + ch]) / halfmax - 1
+        px = global.filter.precalc_ungamma[data.data[len + ch]]
         newDataArr[len + ch] = filter.nextSample(px)
       filter.clear()
     for y in [0...data.height]
@@ -175,14 +179,13 @@ global.filter.createIIR = (radius) ->
   return new global.filter.IIR(radius / 3)
 
 ###
-Only works on grayscale images
-###
+Takes an array and checks each element
+if the value of an element is above threshold
+it is set to 255, if it is below it is set to 0
 
-global.filter.applyThreshold = (data, width, height, threshold) ->
-  for i in [0...width]
-    for j in [0...height]
-      pos = j * width + i
-      if data[pos] < threshold
-        data[pos] = 0
-      else
-        data[pos] = 255
+@param data [Array] The image data array to filter
+@param threshold [Number] The threshold level to apply 0 < threshold < 255
+###
+global.filter.applyThreshold = (data, threshold) ->
+  for i in [0...data.length]
+    data[i] = (data[i] >= threshold) * 255

@@ -110,6 +110,7 @@
 				 <br>
 				 Sharpen: <input type="radio" name="filter-type" value="sharpen"></input>
 				<br>
+					Edge Detect: <input type="radio" name="filter-type" value="edgedetect"></input> 
 				<br>
 				<br>
 				<br>
@@ -128,14 +129,6 @@
 							radius: <span style="color: gray;"><span id="blur-radius-display">3</span>px</span>
 							<br>
 							<input type="range" min="1.5" max="50" value="3" step="0.5" id="blur-radius"></input>
-							<br>
-							<br>
-							Apply to:
-							<br>
-							<br>
-							Whole Image: <input type="radio" name="blur-target" value="image" checked></input>
-							<br>
-							Current Layer: <input type="radio" name="blur-target" value="layer"></input>
 							<br>
 							<br>
 							<button class="close" id="filter-blur-apply">Apply</button>
@@ -160,14 +153,6 @@
 							<input type="range" min="1.5" max="50" value="3" step="0.5" id="sharpen-radius"></input>
 							<br>
 							<br>
-							Apply to:
-							<br>
-							<br>
-							Whole Image: <input type="radio" name="sharpen-target" value="image" checked></input>
-							<br>
-							Current Layer: <input type="radio" name="sharpen-target" value="layer"></input>
-							<br>
-							<br>
 							<button class="close" id="filter-sharpen-apply">Apply</button>
 							<button class="close" id="filter-sharpen-cancel">Cancel</button>
 						</td>
@@ -187,8 +172,8 @@
 				<br>
 				<br>
 				<br>
-				<button class="close" id="filter-sharpen-apply">Apply</button>
-				<button class="close" id="filter-sharpen-cancel">Cancel</button>
+				<button class="close" id="new-layer-create">Create</button>
+				<button class="close" id="new-layer-cancel">Cancel</button>
 			</div>
 		</div>
 		<div id="mnu-file-btns" class="popup" hidden>
