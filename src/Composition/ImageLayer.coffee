@@ -46,7 +46,7 @@ global.addUrlLayer = (url) ->
   img.onload = ->
     global.addLayer new ImgLayer img
 
-  img.onerr = ->
+  img.onerror = ->
     alert "could not load that image"
 
 
