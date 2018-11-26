@@ -36,8 +36,8 @@ urlOpen = getElem "open-url-open"
 urlClose = getElem "open-url-close"
 urlInput = getElem "url-input"
 
-undoBtn = getElem "menu-edit-undo"
-redoBtn = getElem "menu-edit-redo"
+undoBtn = getElem "mnu-edit-undo"
+redoBtn = getElem "mnu-edit-redo"
 copyBtn = getElem "mnu-edit-copy"
 cutBtn = getElem "mnu-edit-cut"
 pasteBtn = getElem "mnu-edit-paste"
@@ -71,6 +71,7 @@ blurCanvas = getElem "blurCanvas"
 
 sharpenCanvas = getElem "sharpenCanvas"
 
+edgedetectModal = getElem "filter-edgedetect-modal"
 edgedetectCanvas = getElem "edgedetectCanvas"
 edgedetectApply = getElem "filter-edgedetect-apply"
 edgedetectCancel = getElem "filter-edgedetect-cancel"
@@ -93,7 +94,10 @@ bindRadiusChange = (elem, modal, flt, canvas, disp)->
 		unless @modal.getAttribute "hidden"
 			val = @elem.value
 			@disp.innerText = val
-			global.applyFilter @flt, global.rendered, global.tmp, options={radius: val}
+			layercnv = global.getLayer(global.selectedLayer).canvas
+			global.tmp.width = layercnv.width
+			global.tmp.height = layercnv.height
+			global.applyFilter @flt, layercnv, global.tmp, options={radius: val}
 			global.copyToCanvas @canvas, src=global.tmp, scale=0.5
 	).bind {elem: elem, modal: modal, flt: flt, canvas: canvas, disp: disp}
 
@@ -133,16 +137,19 @@ addFilterApply = (btn, type, modal, slider) ->
 			type: @type
 			options:
 				radius: radius
-
-		global.selectedLayer.filters.push filter
-		global.selectedLayer.upToDate = no
+		layer = global.getLayer(global.selectedLayer)
+		layercnv = layer.canvas
+		filteredImgData = global.tmp.getContext("2d").getImageData(0, 0, layercnv.width, layercnv.height)
+		for x in [0...layercnv.width]
+			for y in [0...layercnv.height]
+				pos = (y * layercnv.width + x) * 4
+				layer.raster.data[pos] = filteredImgData.data[pos]
+				layer.raster.data[pos+1] = filteredImgData.data[pos+1]
+				layer.raster.data[pos+2] = filteredImgData.data[pos+2]
+				layer.raster.data[pos+3] = filteredImgData.data[pos+3]
+		layer.filters.push filter
+		layer.upToDate = no
 		global.composite()
-
-		global.history.push
-			type: "addfilter"
-			layer: global.selectedLayer.id
-			type: filter.type
-			radius: filter.options.radius
 		@modal.setAttribute "hidden", yes
 		).bind {type: type, modal: modal, slider: slider}
 
@@ -223,6 +230,7 @@ addMenu "help"
 
 addFilterApply blurApply, "blur", blurModal, blurRadius
 addFilterApply sharpenApply, "sharpen", sharpenModal, sharpenRadius
+addFilterApply edgedetectApply, "edgedetect", edgedetectModal, sharpenRadius
 
 bindRadiusChange blurRadius, blurModal, "blur", blurCanvas, blurRadiusText
 bindRadiusChange sharpenRadius, sharpenModal, "sharpen", sharpenCanvas, sharpenRadiusText
@@ -235,13 +243,14 @@ bindModalOpen saveBtn,    saveModal
 bindModalOpen btnAbout, aboutModal
 bindModalOpen btnHelp, helpModal
 
-bindModalClose fltClose,      filterModal
-bindModalClose blurCancel,    blurModal
-bindModalClose sharpenCancel, sharpenModal
-bindModalClose newCancel,     newModal
-bindModalClose urlClose,      openUrlModal
-bindModalClose openClose,     openModal
-bindModalClose saveCancel,    saveModal
+bindModalClose fltClose,     			filterModal
+bindModalClose blurCancel,				blurModal
+bindModalClose sharpenCancel, 		sharpenModal
+bindModalClose newCancel,     		newModal
+bindModalClose urlClose,      		openUrlModal
+bindModalClose openClose,     		openModal
+bindModalClose saveCancel,    		saveModal
+bindModalClose edgedetectCancel,	edgedetectModal
 
 urlOpen.onclick = ->
 	if urlInput.value.length > 0
@@ -267,15 +276,18 @@ fltSelect.onclick = ->
 	modalCanvas = document.querySelector("#filter-" + type + "-modal canvas")
 	modalCanvas.width = global.cnv.width / 2
 	modalCanvas.height = global.cnv.height / 2
+	layercnv = global.getLayer(global.selectedLayer).canvas
+	global.tmp.width = layercnv.width
+	global.tmp.height = layercnv.height
 	switch type
 		when "blur"
-			global.applyFilter "blur", global.rendered, global.tmp, options={radius: getElem("blur-radius").value}
+			global.applyFilter "blur", layercnv, global.tmp, options={radius: getElem("blur-radius").value}
 			break
 		when "sharpen"
-			global.applyFilter "sharpen", global.rendered, global.tmp, options={radius: getElem("sharpen-radius").value}
+			global.applyFilter "sharpen", layercnv, global.tmp, options={radius: getElem("sharpen-radius").value}
 			break
 		when "edgedetect"
-			global.applyFilter "edgedetect", global.rendered, global.tmp, options={}
+			global.applyFilter "edgedetect", layercnv, global.tmp, options={}
 			break
 	global.copyToCanvas modalCanvas, src=global.tmp, scale=0.5
 
@@ -321,6 +333,12 @@ widthSlider.onchange = (->
 	if global.activeTool
 		global.activeTool.lineThickness = @value
 ).bind widthSlider
+
+undoBtn.onclick = ->
+	global.history.undo()
+
+redoBtn.onclick = ->
+	global.history.redo()
 
 ###
 If the browser saves the page state across refreshes

@@ -75,10 +75,10 @@ class Layer
   @return [Object] The old pixel in object form {x, y, r, g, b, a, newr, newg, newb, newa}
   ###
   setPixel: (x, y, color) ->
-    pos = (y * @canvas.width + x) * 4
+    pos = ((y-@y) * @canvas.width + (x-@x)) * 4
     oldData =
-      x: x
-      y: y
+      x: x-@x
+      y: y-@y
       r: @raster.data[pos]
       g: @raster.data[pos + 1]
       b: @raster.data[pos + 2]
@@ -89,7 +89,7 @@ class Layer
       newa: color[3]
     if oldData.r is oldData.newr and oldData.g is oldData.newg and oldData.b = oldData.newb and oldData.a is oldData.newa
       return null
-    @commitPixel x, y, color
+    @commitPixel x-@x, y-@y, color
     ###
     oldx = 0
     oldy = 0
@@ -121,6 +121,7 @@ class Layer
   move: (deltas) ->
     @x += deltas.x
     @y += deltas.y
+    @upToDate = no
 
   setAlpha: (newAlpha) ->
     @ctx.globalAlpha = newAlpha

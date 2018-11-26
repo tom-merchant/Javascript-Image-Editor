@@ -1,3 +1,5 @@
+#pragma once
+
 ###
 Pointer.coffee
 Tom Merchant 2018
@@ -5,6 +7,7 @@ Tom Merchant 2018
 
 #include <jdefs.h>
 #include "Icons.coffee"
+#include "Tool.coffee"
 
 class global.tools.Pointer extends global.tools.Tool
   constructor: () ->
@@ -13,6 +16,9 @@ class global.tools.Pointer extends global.tools.Tool
     @moving = no
     @selection = [0, 0, 0, 0]
     @updates = 0
+    @layerOffset = [0, 0]
+    @moved = [0, 0]
+    @layerOrigin = [0, 0]
 
   begin: (startx, starty) =>
     super startx, starty
@@ -20,18 +26,33 @@ class global.tools.Pointer extends global.tools.Tool
     if @selecting
       @selecting = no
       @moving = yes
-    else
+      @layerOffset = [startx - @layer.x, starty - @layer.y]
+      @layerOrigin = [@layer.x, @layer.y]
+    else if global.isKeyDown "Control"
       @selecting = yes
+    else
+      @moving = yes
+      @layerOffset = [startx - @layer.x, starty - @layer.y]
+      @layerOrigin = [@layer.x, @layer.y]
     return
 
   update: (newx, newy) =>
     super newx, newy
+    if @moving
+      oldx = @layer.x
+      oldy = @layer.y
+      @layer.x = newx - @layerOffset[0]
+      @layer.y = newy - @layerOffset[1]
+      @moved = [@layer.x - @layerOrigin[0], @layer.y - @layerOrigin[1]]
     @updates += 1
+    global.composite()
 
   end: ->
-    super()
+    @active = no
     @selecting = no
     @moving = no
+    if @moved[0] or @moved[1]
+      global.history.push {type: "move", layerId: @layer.id, oldPos: @layerOrigin, newPos: [@layer.x, @layer.y]}
     if @updates is 0 and @selection.reduce((->
        return a + Math.abs b), 0) isnt 0
       return
@@ -40,4 +61,19 @@ class global.tools.Pointer extends global.tools.Tool
       ###
     @updates = 0
 
-global.tools.tools.push new global.tools.Pointer
+global.history.historyFunctionTable["move"] = (data, redo) ->
+  layer = global.getLayer data.layerId
+  unless redo
+    layer.x = data.oldPos[0]
+    layer.y = data.oldPos[1]
+    global.composite()
+  else
+    layer.x = data.newPos[0]
+    layer.y = data.newPos[1]
+    global.composite()
+
+thepointer = new global.tools.Pointer
+
+global.tools.tools.push thepointer
+
+global.activeTool= thepointer

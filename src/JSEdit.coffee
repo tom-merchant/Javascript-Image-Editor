@@ -14,7 +14,6 @@ createNamespace(tools)
 #include "Composition/ImageLayer.coffee"
 #include "Filters/Filters.coffee"
 #include "Tools/Tool.coffee"
-#include "Tools/Pointer.coffee"
 #include "Tools/Pencil.coffee"
 #include "Tools/Brush.coffee"
 #include "Tools/RainbowPen.coffee"
@@ -45,6 +44,8 @@ global.filters = []
 global.selectedLayer = 0
 
 global.activeTool = null
+
+#include "Tools/Pointer.coffee"
 
 global.mouse = new global.Mouse window.document.body
 

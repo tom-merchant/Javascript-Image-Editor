@@ -12,7 +12,7 @@ global.undoneStack = []
 global.history.push = (x...) ->
   global.undoneStack.splice(0)
   global.historyStack.push x...
-  while global.historyStack.length > 100
+  while global.historyStack.length > global.maxHistory
     global.historyStack.shift()
 
 global.history.undo = ->

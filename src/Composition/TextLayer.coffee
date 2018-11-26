@@ -4,7 +4,7 @@
 
 class TextLayer extends Layer
     constructor: (image) ->
-      super [image.width, image.height], "raster"
+      super [image.width, image.height], "text"
       @img = image
       @dataCopied = no
 
