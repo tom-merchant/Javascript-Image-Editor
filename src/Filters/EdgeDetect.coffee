@@ -146,8 +146,6 @@ global.filter.edgeDetect = (src, options={smoothing: 1.8}) ->
 
   threshold = findOptimalThreshold magnitudes
 
-  console.log threshold
-
   global.filter.applyThreshold magnitudes.data, magnitudes.width, magnitudes.height, threshold
 
   return [magnitudes, angles]

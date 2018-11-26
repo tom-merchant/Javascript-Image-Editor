@@ -212,6 +212,35 @@
 				<button class="close" id="save-cancel">Cancel</button>
 			</div>
 		</div>
+		<div id="help-modal" class="modal" hidden>
+			<div class="modal-content">
+				<h2>Help</h2>
+				<br>
+				<br>
+				<p>
+					You can select between the tools on the left by clicking on them.
+					Hover over each tool for some more information.
+					You can reorder layers with the ^v buttons.
+				</p>
+				<br>
+				<br>
+				<h3 style="color:red">Click outside this box to exit</h3>
+			</div>
+		</div>
+		<div id="about-modal" class="modal" hidden>
+			<div class="modal-content">
+				<h2>About</h2>
+				<br>
+				<h3>JSEdit</h3>
+				<br>
+				<br>
+				JSEdit is an image editor written in coffeescript.
+				<br>
+				&copy; Tom Merchant 2018
+				<br>
+				<h3 style="color:red">Click outside this box to exit</h3>
+			</div>
+		</div>
 		<div id="mnu-file-btns" class="popup" hidden>
 			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
@@ -269,10 +298,10 @@
 		<div id="mnu-help-btns" class="popup" hidden>
 			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
-					<button class="mnubtn2">About</button>
+					<button id="btnabt" class="mnubtn2">About</button>
 				</li>
 				<li>
-					<button class="mnubtn2">Help</button>
+					<button id="btnhlp" class="mnubtn2">Help</button>
 				</li>
 			</ul>
 		</div>

@@ -17,6 +17,7 @@ createNamespace(tools)
 #include "Tools/Pointer.coffee"
 #include "Tools/Pencil.coffee"
 #include "Tools/Brush.coffee"
+#include "Tools/RainbowPen.coffee"
 #include "Tools/Rubber.coffee"
 #include "Tools/Text.coffee"
 

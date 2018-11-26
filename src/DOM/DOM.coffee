@@ -75,6 +75,11 @@ edgedetectCanvas = getElem "edgedetectCanvas"
 edgedetectApply = getElem "filter-edgedetect-apply"
 edgedetectCancel = getElem "filter-edgedetect-cancel"
 
+helpModal = getElem "help-modal"
+aboutModal = getElem "about-modal"
+btnAbout = getElem "btnhlp"
+btnHelp = getElem "btnabt"
+
 colour1 = getElem "colour1"
 colour2 = getElem "colour2"
 
@@ -84,120 +89,132 @@ widthSlider = getElem "widthslider"
 Updates the output of the filter being configured when the radius changes
 ###
 bindRadiusChange = (elem, modal, flt, canvas, disp)->
-  elem.onchange = ((e) ->
-    unless @modal.getAttribute "hidden"
-      val = @elem.value
-      @disp.innerText = val
-      global.applyFilter @flt, global.rendered, global.tmp, options={radius: val}
-      global.copyToCanvas @canvas, src=global.tmp, scale=0.5
-  ).bind {elem: elem, modal: modal, flt: flt, canvas: canvas, disp: disp}
+	elem.onchange = ((e) ->
+		unless @modal.getAttribute "hidden"
+			val = @elem.value
+			@disp.innerText = val
+			global.applyFilter @flt, global.rendered, global.tmp, options={radius: val}
+			global.copyToCanvas @canvas, src=global.tmp, scale=0.5
+	).bind {elem: elem, modal: modal, flt: flt, canvas: canvas, disp: disp}
 
 ###
 Sets up the menu buttons defined in the document
 @param str [String] The name of the menu button
 ###
 addMenu = (str) ->
-  global.menuOpen[str] = no
-  mnuBtn = getElem "mnu-" + str
-  mnuBtns = getElem "mnu-" + str + "-btns"
+	global.menuOpen[str] = no
+	mnuBtn = getElem "mnu-" + str
+	mnuBtns = getElem "mnu-" + str + "-btns"
 
-  mnuBtn.onclick = ((mnuBtns) ->
-    unless global.menuOpen[@str]
-      @mnuBtns.style.left = global.mouse.x + "px"
-      @mnuBtns.style.top = global.mouse.y + "px"
-      @mnuBtns.removeAttribute "hidden"
-      global.menuOpen[@str] = yes
-    else
-      @mnuBtns.setAttribute "hidden", yes
-      global.menuOpen[@str] = no
-  ).bind({mnuBtns: mnuBtns, str: str})
+	mnuBtn.onclick = ((mnuBtns) ->
+		unless global.menuOpen[@str]
+			@mnuBtns.style.left = global.mouse.x + "px"
+			@mnuBtns.style.top = global.mouse.y + "px"
+			@mnuBtns.removeAttribute "hidden"
+			global.menuOpen[@str] = yes
+		else
+			@mnuBtns.setAttribute "hidden", yes
+			global.menuOpen[@str] = no
+	).bind({mnuBtns: mnuBtns, str: str})
 
-  window.addEventListener "click", ((e) ->
-    if e.target isnt @mnuBtn and global.menuOpen[@str]
-      global.menuOpen[@str] = no
-      @mnuBtns.setAttribute "hidden", yes
-    ).bind {mnuBtn: mnuBtn, mnuBtns: mnuBtns, str: str}
+	window.addEventListener "click", ((e) ->
+		if e.target isnt @mnuBtn and global.menuOpen[@str]
+			global.menuOpen[@str] = no
+			@mnuBtns.setAttribute "hidden", yes
+		).bind {mnuBtn: mnuBtn, mnuBtns: mnuBtns, str: str}
 
 ###
 Mechanism for applying filter configurations
 ###
 addFilterApply = (btn, type, modal, slider) ->
-  btn.onclick = (->
-    radius = @slider.value
-    filter =
-      type: @type
-      options:
-        radius: radius
+	btn.onclick = (->
+		radius = @slider.value
+		filter =
+			type: @type
+			options:
+				radius: radius
 
-    global.selectedLayer.filters.push filter
-    global.selectedLayer.upToDate = no
-    global.composite()
+		global.selectedLayer.filters.push filter
+		global.selectedLayer.upToDate = no
+		global.composite()
 
-    global.history.push
-      type: "addfilter"
-      layer: global.selectedLayer.id
-      type: filter.type
-      radius: filter.options.radius
-    @modal.setAttribute "hidden", yes
-    ).bind {type: type, modal: modal, slider: slider}
+		global.history.push
+			type: "addfilter"
+			layer: global.selectedLayer.id
+			type: filter.type
+			radius: filter.options.radius
+		@modal.setAttribute "hidden", yes
+		).bind {type: type, modal: modal, slider: slider}
 
 bindModalOpen = (button, modal) ->
-  button.onclick = (->
-    @.removeAttribute "hidden").bind(modal)
+	button.onclick = (->
+		@.removeAttribute "hidden").bind(modal)
 
 bindModalClose = (button, modal) ->
-  button.onclick = (->
-    @.setAttribute "hidden", yes).bind(modal)
+	button.onclick = (->
+		@.setAttribute "hidden", yes).bind(modal)
 
 ###
 FIXME: This needs to be automated with a loop or something
 its ridiculous
 ###
 global.addKeyDownHandler (k) ->
-  if k is "Enter"
-    if !openModal.getAttribute "hidden"
-      openOpen.onclick()
-    else if !openUrlModal.getAttribute "hidden"
-      urlOpen.onclick()
-    else if !saveModal.getAttribute "hidden"
-      saveSave.onclick()
-    else if !newModal.getAttribute "hidden"
-      newCreate.onclick()
-    else if !sharpenModal.getAttribute "hidden"
-      sharpenApply.onclick()
-    else if !blurModal.getAttribute "hidden"
-      blurApply.onclick()
-    else if !filterModal.getAttribute "hidden"
-      fltSelect.onclick()
-    else if !edgedetectModal.getAttribute "hidden"
-      edgedetectApply.onclick()
-  else if k is "Escape"
-    if !openModal.getAttribute "hidden"
-      openClose.onclick()
-    else if !openUrlModal.getAttribute "hidden"
-      urlClose.onclick()
-    else if !saveModal.getAttribute "hidden"
-      saveCancel.onclick()
-    else if !newModal.getAttribute "hidden"
-      newCancel.onclick()
-    else if !sharpenModal.getAttribute "hidden"
-      sharpenCancel.onclick()
-    else if !blurModal.getAttribute "hidden"
-      blurCancel.onclick()
-    else if !filterModal.getAttribute "hidden"
-      fltClose.onclick()
-    else if !edgedetectModal.getAttribute "hidden"
-      edgedetectCancel.onclick()
+	if k is "Enter"
+		if !openModal.getAttribute "hidden"
+			openOpen.onclick()
+		else if !openUrlModal.getAttribute "hidden"
+			urlOpen.onclick()
+		else if !saveModal.getAttribute "hidden"
+			saveSave.onclick()
+		else if !newModal.getAttribute "hidden"
+			newCreate.onclick()
+		else if !sharpenModal.getAttribute "hidden"
+			sharpenApply.onclick()
+		else if !blurModal.getAttribute "hidden"
+			blurApply.onclick()
+		else if !filterModal.getAttribute "hidden"
+			fltSelect.onclick()
+		else if !edgedetectModal.getAttribute "hidden"
+			edgedetectApply.onclick()
+		else if !helpModal.getAttribute "hidden"
+			helpModal.setAttribute "hidden", yes
+		else if !aboutModal.getAttribute "hidden"
+			aboutModal.setAttribute "hidden", yes
+	else if k is "Escape"
+		if !openModal.getAttribute "hidden"
+			openClose.onclick()
+		else if !openUrlModal.getAttribute "hidden"
+			urlClose.onclick()
+		else if !saveModal.getAttribute "hidden"
+			saveCancel.onclick()
+		else if !newModal.getAttribute "hidden"
+			newCancel.onclick()
+		else if !sharpenModal.getAttribute "hidden"
+			sharpenCancel.onclick()
+		else if !blurModal.getAttribute "hidden"
+			blurCancel.onclick()
+		else if !filterModal.getAttribute "hidden"
+			fltClose.onclick()
+		else if !edgedetectModal.getAttribute "hidden"
+			edgedetectCancel.onclick()
+		else if !helpModal.getAttribute "hidden"
+			helpModal.setAttribute "hidden", yes
+		else if !aboutModal.getAttribute "hidden"
+			aboutModal.setAttribute "hidden", yes
 
 window.addEventListener "click", (e) ->
-  if e.target is openModal
-    openModal.setAttribute "hidden", yes
-  else if e.target is openUrlModal
-    openUrlModal.setAttribute "hidden", yes
-  else if e.target is filterModal
-    filterModal.setAttribute "hidden", yes
-  else if e.target is newModal
-    newModal.setAttribute "hidden", yes
+	if e.target is openModal
+		openModal.setAttribute "hidden", yes
+	else if e.target is openUrlModal
+		openUrlModal.setAttribute "hidden", yes
+	else if e.target is filterModal
+		filterModal.setAttribute "hidden", yes
+	else if e.target is newModal
+		newModal.setAttribute "hidden", yes
+	else if e.target is helpModal
+		helpModal.setAttribute "hidden", yes
+	else if e.target is aboutModal
+		aboutModal.setAttribute "hidden", yes
 
 addMenu "file"
 addMenu "edit"
@@ -215,6 +232,8 @@ bindModalOpen btnOpen,    openModal
 bindModalOpen btnOpenUrl, openUrlModal
 bindModalOpen btnFilter,  filterModal
 bindModalOpen saveBtn,    saveModal
+bindModalOpen btnAbout, aboutModal
+bindModalOpen btnHelp, helpModal
 
 bindModalClose fltClose,      filterModal
 bindModalClose blurCancel,    blurModal
@@ -225,82 +244,82 @@ bindModalClose openClose,     openModal
 bindModalClose saveCancel,    saveModal
 
 urlOpen.onclick = ->
-  if urlInput.value.length > 0
-    url = urlInput.value
-    urlInput.value = null
-    global.addUrlLayer url
-    openUrlModal.setAttribute "hidden", yes
+	if urlInput.value.length > 0
+		url = urlInput.value
+		urlInput.value = null
+		global.addUrlLayer url
+		openUrlModal.setAttribute "hidden", yes
 
 openOpen.onclick = ->
-  if fileInput.files.length > 0
-    file = fileInput.files[0]
-    reader = new FileReader()
-    reader.onload = global.addFileLayer
-    reader.onerror = (-> global.assert false, "Failed to load " + @src).bind({src: file})
-    reader.readAsDataURL file
-    fileInput.value = null
-    openModal.setAttribute "hidden", yes
+	if fileInput.files.length > 0
+		file = fileInput.files[0]
+		reader = new FileReader()
+		reader.onload = global.addFileLayer
+		reader.onerror = (-> global.assert false, "Failed to load " + @src).bind({src: file})
+		reader.readAsDataURL file
+		fileInput.value = null
+		openModal.setAttribute "hidden", yes
 
 fltSelect.onclick = ->
-  type = document.querySelector("input[name=filter-type]:checked").value
-  filterModal.setAttribute "hidden", yes
-  getElem("filter-" + type + "-modal").removeAttribute "hidden"
-  modalCanvas = document.querySelector("#filter-" + type + "-modal canvas")
-  modalCanvas.width = global.cnv.width / 2
-  modalCanvas.height = global.cnv.height / 2
-  switch type
-    when "blur"
-      global.applyFilter "blur", global.rendered, global.tmp, options={radius: getElem("blur-radius").value}
-      break
-    when "sharpen"
-      global.applyFilter "sharpen", global.rendered, global.tmp, options={radius: getElem("sharpen-radius").value}
-      break
-    when "edgedetect"
-      global.applyFilter "edgedetect", global.rendered, global.tmp, options={}
-      break
-  global.copyToCanvas modalCanvas, src=global.tmp, scale=0.5
+	type = document.querySelector("input[name=filter-type]:checked").value
+	filterModal.setAttribute "hidden", yes
+	getElem("filter-" + type + "-modal").removeAttribute "hidden"
+	modalCanvas = document.querySelector("#filter-" + type + "-modal canvas")
+	modalCanvas.width = global.cnv.width / 2
+	modalCanvas.height = global.cnv.height / 2
+	switch type
+		when "blur"
+			global.applyFilter "blur", global.rendered, global.tmp, options={radius: getElem("blur-radius").value}
+			break
+		when "sharpen"
+			global.applyFilter "sharpen", global.rendered, global.tmp, options={radius: getElem("sharpen-radius").value}
+			break
+		when "edgedetect"
+			global.applyFilter "edgedetect", global.rendered, global.tmp, options={}
+			break
+	global.copyToCanvas modalCanvas, src=global.tmp, scale=0.5
 
 
 newImgCnv = document.createElement "canvas"
 newImgCtx = newImgCnv.getContext("2d")
 
 newCreate.onclick = ->
-  newImgCnv.width = getElem("new-layer-width").value
-  newImgCnv.height = getElem("new-layer-height").value
-  newImgCtx.fillStyle = getElem("new-layer-colour").value
-  newImgCtx.fillRect 0, 0, newImgCnv.width, newImgCnv.height
-  global.addUrlLayer newImgCnv.toDataURL()
-  newModal.setAttribute "hidden", yes
+	newImgCnv.width = getElem("new-layer-width").value
+	newImgCnv.height = getElem("new-layer-height").value
+	newImgCtx.fillStyle = getElem("new-layer-colour").value
+	newImgCtx.fillRect 0, 0, newImgCnv.width, newImgCnv.height
+	global.addUrlLayer newImgCnv.toDataURL()
+	newModal.setAttribute "hidden", yes
 
 saveSave.onclick = (->
-  format = getElem("save-format").value
-  dataUrl = global.rendered.toDataURL(format)
-  anchor = document.createElement "a"
-  anchor.href = dataUrl
-  anchor.download = getElem("save-name").value + format.replace("image/", ".")
-  anchor.innerText = anchor.download
-  anchor.click()
-  @parentNode.appendChild anchor
-  anchor.onclick = (->
-    saveModal.setAttribute "hidden", yes
-    @parentNode.removeChild @
-    ).bind anchor
-  anchor.click()
-  ).bind saveSave
+	format = getElem("save-format").value
+	dataUrl = global.rendered.toDataURL(format)
+	anchor = document.createElement "a"
+	anchor.href = dataUrl
+	anchor.download = getElem("save-name").value + format.replace("image/", ".")
+	anchor.innerText = anchor.download
+	anchor.click()
+	@parentNode.appendChild anchor
+	anchor.onclick = (->
+		saveModal.setAttribute "hidden", yes
+		@parentNode.removeChild @
+		).bind anchor
+	anchor.click()
+	).bind saveSave
 
 
 colour1.onchange = (->
-  global.fgColour = global.parseColour(@value)
-  ).bind colour1
+	global.fgColour = global.parseColour(@value)
+	).bind colour1
 
 colour2.onchange = (->
-  global.bgColour = global.parseColour(@value)
-  ).bind colour2
+	global.bgColour = global.parseColour(@value)
+	).bind colour2
 
 widthSlider.onchange = (->
-  global.brushwidth = @value
-  if global.activeTool
-    global.activeTool.lineThickness = @value
+	global.brushwidth = @value
+	if global.activeTool
+		global.activeTool.lineThickness = @value
 ).bind widthSlider
 
 ###
