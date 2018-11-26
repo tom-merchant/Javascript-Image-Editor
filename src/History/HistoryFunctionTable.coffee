@@ -17,3 +17,4 @@ global.history.historyFunctionTable =
           if data.data[i]?
             layer.commitPixel data.data[i].x, data.data[i].y, [data.data[i].newr, data.data[i].newg, data.data[i].newb, data.data[i].newa]
     global.composite()
+

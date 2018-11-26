@@ -29,7 +29,7 @@ global.pan = (dX, dY) ->
   I use the sign of dX and dY so that it will be
   consistent across devices and browsers
   ###
-  global.panning[0] -= Math.sign(dX) * global.panRate / global.scale
+  global.panning[0] += Math.sign(dX) * global.panRate / global.scale
   global.panning[1] -= Math.sign(dY) * global.panRate / global.scale
   global.panning[0] = global.clamp global.panning[0], global.minpan[0], global.maxpan[0]
   global.panning[1] = global.clamp global.panning[1], global.minpan[1], global.maxpan[1]

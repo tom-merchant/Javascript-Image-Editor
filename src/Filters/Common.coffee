@@ -15,6 +15,13 @@ Tom Merchant 2018
 global.filter.kernelCache = {}
 
 ###
+FIXME: I have structured this algorithm (and entire program) in a manner that is unconducive to multithreading
+This algorithm operates independently on each channel so I could reduce the time it takes
+to calculate by a factor of 4
+Same goes for the filter applying function
+###
+
+###
 Performs a kernel convolution with the given kernel on the src image data
 
 @param kernel [Object] The kernel to apply

@@ -121,7 +121,7 @@ global.filter.edgeDetect = (src, options={smoothing: 1.8}) ->
     smoothedImg = global.filter.applyFilter gfilter, src
 
     ###
-    TODO: wouldnt it make sense to do the blur after
+    FIXME: wouldnt it make sense to do the blur after
           grayscaling?
     ###
 
@@ -145,6 +145,8 @@ global.filter.edgeDetect = (src, options={smoothing: 1.8}) ->
     magnitudes.data[i] = Math.min(~~magnitudes.data[i], 255)
 
   threshold = findOptimalThreshold magnitudes
+
+  console.log threshold
 
   global.filter.applyThreshold magnitudes.data, magnitudes.width, magnitudes.height, threshold
 

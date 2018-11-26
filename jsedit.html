@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<title>Image Editor</title>
-		<link rel="stylesheet" href="style.css"></link>
+		<link rel="stylesheet" href="src/style.css"></link>
 	</head>
 	<body>
 		<table>
@@ -35,15 +35,11 @@
 							<!-- TODO: Control tooltips appear at the bottom of the page not by the controls as they should -->
 							<td>
 								<div>
-									<input class="slider" id="widthslider" type="range" min="0" max="150" value="10" name="brushwidth" orient="vertical">
-									<div class="tooltip">Adjusts the brush/eraser width</div>
+									<input class="slider" id="widthslider" type="range" min="0" max="50" value="10" name="brushwidth" orient="vertical">
 								</div>
 							</td>
 							<td>
-								<div>
-									<input class="slider" id="hardnessslider" type="range" min="0.05" max="1" value="1" step="0.05" name="hardness" orient="vertical">
-									<div class="tooltip">Adjusts the transparency of the brush/eraser</div>
-								</div>
+								Brush<br>Width
 							</td>
 						</tr>
 						<tr>
@@ -105,12 +101,13 @@
 		<div id="filter-modal" class="modal" hidden>
 			<div class="modal-content">
 				<h2>Select filter</h2>
+				<h3 style="color: red;">Warning: these actions cannot be undone</h3>
 				<br>
 				 Blur: <input type="radio" name="filter-type" value="blur" checked></input>
 				 <br>
 				 Sharpen: <input type="radio" name="filter-type" value="sharpen"></input>
 				<br>
-					Edge Detect: <input type="radio" name="filter-type" value="edgedetect"></input> 
+					Edge Detect: <input type="radio" name="filter-type" value="edgedetect"></input>
 				<br>
 				<br>
 				<br>
@@ -163,6 +160,21 @@
 				</table>
 			</div>
 		</div>
+		<div id="filter-edgedetect-modal" class="modal" hidden>
+			<div class="modal-content">
+				<table>
+					<tr>
+						<td>
+							<button class="close" id="filter-edgedetect-apply">Apply</button>
+							<button class="close" id="filter-edgedetect-cancel">Cancel</button>
+						</td>
+						<td>
+							<canvas wdith="512px" height="400px" id = "edgedetectCanvas"></canvas>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 		<div id="new-layer-modal" class="modal" hidden>
 			<div class="modal-content">
 				<h2>New Layer</h2>
@@ -171,9 +183,33 @@
 				Height:&nbsp;<input type="number" id="new-layer-height" value="1024" min="1"></input>
 				<br>
 				<br>
+				Color:&nbsp;<input type="color" id="new-layer-colour" value="#FFFFFF"></input>
+				<br>
 				<br>
 				<button class="close" id="new-layer-create">Create</button>
 				<button class="close" id="new-layer-cancel">Cancel</button>
+			</div>
+		</div>
+		<div id="save-modal" class="modal" hidden>
+			<div class="modal-content">
+				<h2>Save Image</h2>
+				<br>
+				Name
+				<br>
+				<input id="save-name" type="text" value="image">
+				<br>
+				<br>
+				Format
+				<br>
+				<select style="color: black !important;" id="save-format">
+					<option value="image/png">PNG</option>
+					<option value="image/bmp">Bitmap</option>
+					<option value="image/jpeg">Jpeg</option>
+				</select>
+				<br>
+				<br>
+				<button class="close" id="save-save">Save</button>
+				<button class="close" id="save-cancel">Cancel</button>
 			</div>
 		</div>
 		<div id="mnu-file-btns" class="popup" hidden>
@@ -188,7 +224,7 @@
 					<button class="mnubtn2" id="mnu-url-open">Open URL</button>
 				</li>
 				<li>
-					<button class="mnubtn2" id="mnu-file-new">Save</button>
+					<button class="mnubtn2" id="mnu-file-save">Save</button>
 				</li>
 			</ul>
 		</div>
@@ -196,22 +232,22 @@
 		<div id="mnu-edit-btns" class="popup" hidden>
 			<ul style="list-style-type: none;text-align:left;padding:0;margin: 0;">
 				<li>
-					<button class="mnubtn2">Undo</button>
+					<button class="mnubtn2" id="mnu-edit-undo">Undo</button>
 				</li>
 				<li>
-					<button class="mnubtn2">Redo</button>
+					<button class="mnubtn2" id="mnu-edit-redo">Redo</button>
 				</li>
 				<li>
-					<button class="mnubtn2">Copy</button>
+					<button class="mnubtn2" id="mnu-edit-copy">Copy</button>
 				</li>
 				<li>
-					<button class="mnubtn2">Cut</button>
+					<button class="mnubtn2" id="mnu-edit-cut">Cut</button>
 				</li>
 				<li>
-					<button class="mnubtn2">Paste</button>
+					<button class="mnubtn2" id="mnu-edit-paste">Paste</button>
 				</li>
 				<li>
-					<button class="mnubtn2">Resize</button>
+					<button class="mnubtn2" id="mnu-edit-resize">Resize</button>
 				</li>
 				<li>
 					<button class="mnubtn2" id="select-filter">Filter</button>
@@ -240,6 +276,6 @@
 				</li>
 			</ul>
 		</div>
-		<script type="text/javascript" src="JSEdit.out.js"></script>
+		<script type="text/javascript" src="src/JSEdit.out.js"></script>
 	</body>
 </html>

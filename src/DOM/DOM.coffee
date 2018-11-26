@@ -36,6 +36,17 @@ urlOpen = getElem "open-url-open"
 urlClose = getElem "open-url-close"
 urlInput = getElem "url-input"
 
+undoBtn = getElem "menu-edit-undo"
+redoBtn = getElem "menu-edit-redo"
+copyBtn = getElem "mnu-edit-copy"
+cutBtn = getElem "mnu-edit-cut"
+pasteBtn = getElem "mnu-edit-paste"
+resizeBtn = getElem "mnu-edit-resize"
+saveBtn = getElem "mnu-file-save"
+saveCancel = getElem "save-cancel"
+saveSave = getElem "save-save"
+saveModal = getElem "save-modal"
+
 btnFilter = getElem "select-filter"
 filterModal = getElem "filter-modal"
 fltSelect = getElem "filter-select-apply"
@@ -60,8 +71,14 @@ blurCanvas = getElem "blurCanvas"
 
 sharpenCanvas = getElem "sharpenCanvas"
 
+edgedetectCanvas = getElem "edgedetectCanvas"
+edgedetectApply = getElem "filter-edgedetect-apply"
+edgedetectCancel = getElem "filter-edgedetect-cancel"
+
 colour1 = getElem "colour1"
 colour2 = getElem "colour2"
+
+widthSlider = getElem "widthslider"
 
 ###
 Updates the output of the filter being configured when the radius changes
@@ -132,18 +149,45 @@ bindModalClose = (button, modal) ->
   button.onclick = (->
     @.setAttribute "hidden", yes).bind(modal)
 
-
+###
+FIXME: This needs to be automated with a loop or something
+its ridiculous
+###
 global.addKeyDownHandler (k) ->
   if k is "Enter"
     if !openModal.getAttribute "hidden"
       openOpen.onclick()
     else if !openUrlModal.getAttribute "hidden"
       urlOpen.onclick()
+    else if !saveModal.getAttribute "hidden"
+      saveSave.onclick()
+    else if !newModal.getAttribute "hidden"
+      newCreate.onclick()
+    else if !sharpenModal.getAttribute "hidden"
+      sharpenApply.onclick()
+    else if !blurModal.getAttribute "hidden"
+      blurApply.onclick()
+    else if !filterModal.getAttribute "hidden"
+      fltSelect.onclick()
+    else if !edgedetectModal.getAttribute "hidden"
+      edgedetectApply.onclick()
   else if k is "Escape"
     if !openModal.getAttribute "hidden"
       openClose.onclick()
     else if !openUrlModal.getAttribute "hidden"
       urlClose.onclick()
+    else if !saveModal.getAttribute "hidden"
+      saveCancel.onclick()
+    else if !newModal.getAttribute "hidden"
+      newCancel.onclick()
+    else if !sharpenModal.getAttribute "hidden"
+      sharpenCancel.onclick()
+    else if !blurModal.getAttribute "hidden"
+      blurCancel.onclick()
+    else if !filterModal.getAttribute "hidden"
+      fltClose.onclick()
+    else if !edgedetectModal.getAttribute "hidden"
+      edgedetectCancel.onclick()
 
 window.addEventListener "click", (e) ->
   if e.target is openModal
@@ -166,17 +210,19 @@ addFilterApply sharpenApply, "sharpen", sharpenModal, sharpenRadius
 bindRadiusChange blurRadius, blurModal, "blur", blurCanvas, blurRadiusText
 bindRadiusChange sharpenRadius, sharpenModal, "sharpen", sharpenCanvas, sharpenRadiusText
 
-bindModalOpen btnNew, newModal
-bindModalOpen btnOpen, openModal
+bindModalOpen btnNew,     newModal
+bindModalOpen btnOpen,    openModal
 bindModalOpen btnOpenUrl, openUrlModal
-bindModalOpen btnFilter, filterModal
+bindModalOpen btnFilter,  filterModal
+bindModalOpen saveBtn,    saveModal
 
-bindModalClose fltClose, filterModal
-bindModalClose blurCancel, blurModal
+bindModalClose fltClose,      filterModal
+bindModalClose blurCancel,    blurModal
 bindModalClose sharpenCancel, sharpenModal
-bindModalClose newCancel, newModal
-bindModalClose urlClose, openUrlModal
-bindModalClose openClose, openModal
+bindModalClose newCancel,     newModal
+bindModalClose urlClose,      openUrlModal
+bindModalClose openClose,     openModal
+bindModalClose saveCancel,    saveModal
 
 urlOpen.onclick = ->
   if urlInput.value.length > 0
@@ -209,7 +255,39 @@ fltSelect.onclick = ->
     when "sharpen"
       global.applyFilter "sharpen", global.rendered, global.tmp, options={radius: getElem("sharpen-radius").value}
       break
+    when "edgedetect"
+      global.applyFilter "edgedetect", global.rendered, global.tmp, options={}
+      break
   global.copyToCanvas modalCanvas, src=global.tmp, scale=0.5
+
+
+newImgCnv = document.createElement "canvas"
+newImgCtx = newImgCnv.getContext("2d")
+
+newCreate.onclick = ->
+  newImgCnv.width = getElem("new-layer-width").value
+  newImgCnv.height = getElem("new-layer-height").value
+  newImgCtx.fillStyle = getElem("new-layer-colour").value
+  newImgCtx.fillRect 0, 0, newImgCnv.width, newImgCnv.height
+  global.addUrlLayer newImgCnv.toDataURL()
+  newModal.setAttribute "hidden", yes
+
+saveSave.onclick = (->
+  format = getElem("save-format").value
+  dataUrl = global.rendered.toDataURL(format)
+  anchor = document.createElement "a"
+  anchor.href = dataUrl
+  anchor.download = getElem("save-name").value + format.replace("image/", ".")
+  anchor.innerText = anchor.download
+  anchor.click()
+  @parentNode.appendChild anchor
+  anchor.onclick = (->
+    saveModal.setAttribute "hidden", yes
+    @parentNode.removeChild @
+    ).bind anchor
+  anchor.click()
+  ).bind saveSave
+
 
 colour1.onchange = (->
   global.fgColour = global.parseColour(@value)
@@ -219,33 +297,16 @@ colour2.onchange = (->
   global.bgColour = global.parseColour(@value)
   ).bind colour2
 
-for element in document.querySelectorAll "input[name=blur-type]"
-  element.onclick = (->
-    for elem in document.querySelectorAll ".bluroption"
-      elem.setAttribute "hidden", yes
-    getElem(@value + "-options").removeAttribute "hidden"
-    ###Apply with default settings###
-    global.applyFilter @value + "blur", global.rendered, global.tmp, options={radius: getElem(@value + "-blur-radius").value}
-    global.copyToCanvas blurCanvas, src=global.tmp, scale=0.5
-    ).bind element
-
-for element in document.querySelectorAll "input[name=sharpen-type]"
-  element.onclick = (->
-    for elem in document.querySelectorAll ".sharpenoption"
-      elem.setAttribute "hidden", yes
-    getElem(@value + "-options").removeAttribute "hidden"
-    ###Apply with default settings###
-    global.applyFilter @value + "sharpen", global.rendered, global.tmp, options={radius: getElem(@value + "-sharpen-radius").value}
-    global.copyToCanvas sharpenCanvas, src=global.tmp, scale=0.5
-    ).bind element
+widthSlider.onchange = (->
+  global.brushwidth = @value
+  if global.activeTool
+    global.activeTool.lineThickness = @value
+).bind widthSlider
 
 ###
 If the browser saves the page state across refreshes
-then we need to load the selected colours, brush widths
-and brush hardnesses
+then we need to load the selected colours, and brush width
 ###
 global.fgColour = global.parseColour(colour1.value)
 global.bgColour = global.parseColour(colour2.value)
-###
-TODO: load brush width and hardness
-###
+global.brushwidth = widthSlider.value

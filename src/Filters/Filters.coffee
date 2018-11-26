@@ -37,8 +37,9 @@ global.applyFilter = (type, src, dst, options) ->
             result.data[len] = data.data[len] + (data.data[len] - result.data[len])
       break
     when "edgedetect"
+      result = global.ctx.createImageData src.width, src.height
       rawResult = global.filter.edgeDetect data
       magnitudes = rawResult[0]
-      result = global.filter.expandSingleChannel magnitudes
+      global.filter.expandSingleChannel magnitudes, result
       break
   dst.getContext("2d").putImageData result, 0, 0

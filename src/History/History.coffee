@@ -1,3 +1,4 @@
+#pragma once
 #include <jdefs.h>
 createNamespace(history)
 #include "HistoryFunctionTable.coffee"
@@ -28,8 +29,9 @@ global.history.undo = ->
 
 global.history.redo = ->
   action = global.undoneStack.pop()
-  global.history.historyFunctionTable[action.type](action, true)
-  global.historyStack.push action
+  if action?
+    global.history.historyFunctionTable[action.type](action, true)
+    global.historyStack.push action
 
 global.addKeyDownHandler((key) ->
   if global.isKeyDown 'Control'
