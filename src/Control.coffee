@@ -1,4 +1,12 @@
 #pragma once
+
+###
+Control.coffee Tom Merchant 2018
+
+Controls the functionality of the panning and zooming of the canvas
+ensures everything doesnt glitch out
+###
+
 #include <jdefs.h>
 #include "Maths.coffee"
 

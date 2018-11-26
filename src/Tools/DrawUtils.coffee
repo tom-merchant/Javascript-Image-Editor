@@ -1,5 +1,12 @@
 #pragma once
 
+###
+DrawUtils Tom Merchant 2018
+
+Contains functions for drawing pixels to an array in order to get the desired
+brush effects
+###
+
 drawPixel = (x, y, colour, layer, list=[], draw=true) ->
 	if draw
 		list.push layer.setPixel(x, y, colour)

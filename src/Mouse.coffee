@@ -1,4 +1,11 @@
 #pragma once
+
+###
+Mouse.coffee Tom Merchant 2018
+
+A useful file for handling mouse input
+###
+
 #include <jdefs.h>
 
 class global.Mouse

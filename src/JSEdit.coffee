@@ -1,5 +1,11 @@
 #include <jdefs.h>
 
+###
+JSEdit.coffee Tom Merchant 2018
+
+Main class which launches JSEdit and provides the core setup
+###
+
 createNamespace(filter)
 createNamespace(tools)
 

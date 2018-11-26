@@ -1,4 +1,13 @@
 #pragma once
+
+###
+PixelGrid.coffee Tom Merchant 2018
+
+Contains two functions, one which can be used to highlight pixels
+The main function calculates how to draw a grid around the pixels
+when the image is enlarged
+###
+
 #include <jdefs.h>
 
 global.drawPixelGrid = ->

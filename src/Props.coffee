@@ -1,4 +1,11 @@
 #pragma once
+
+###
+Props.coffee Tom Merchant 2018
+
+Defines some global properties for the behaviour of JSEdit
+###
+
 #include "jdefs.h"
 
 global.gamma = 2.2

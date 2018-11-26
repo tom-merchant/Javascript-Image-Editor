@@ -1,4 +1,13 @@
 #pragma once
+
+###
+Layer.coffee Tom Merchant 2018
+
+This file defines the base class for Layers
+all concrete Layers must extend this or provide
+the same methods
+###
+
 #include "jdefs.h"
 
 global.layers = []
@@ -90,32 +99,6 @@ class Layer
     if oldData.r is oldData.newr and oldData.g is oldData.newg and oldData.b = oldData.newb and oldData.a is oldData.newa
       return null
     @commitPixel x-@x, y-@y, color
-    ###
-    oldx = 0
-    oldy = 0
-    if isNaN @outdatedBounds[0]
-      @outdatedBounds[0] = x
-    else
-      oldx = @outdatedBounds[0]
-      @outdatedBounds[0] = Math.min x, @outdatedBounds[0]
-    if isNaN @outdatedBounds[1]
-      @outdatedBounds[1] = y
-    else
-      oldy = @outdatedBounds[1]
-      @outdatedBounds[1] = Math.min y, @outdatedBounds[1]
-    if isNaN @outdatedBounds[2]
-      @outdatedBounds[2] = 1
-    else if x <= oldx
-      @outdatedBounds[2] += oldx - x
-    else if x >= (oldx + @outdatedBounds[2])
-      @outdatedBounds[2] += x - (oldx + @outdatedBounds[2])
-    if isNaN @outdatedBounds[3]
-      @outdatedBounds[3] = 1
-    else if y <= oldy
-      @outdatedBounds[3] += oldy - y
-    else if y >= (oldy + @outdatedBounds[3])
-      @outdatedBounds[3] += y - (oldy + @outdatedBounds[3])
-    ###
     return oldData
 
   move: (deltas) ->

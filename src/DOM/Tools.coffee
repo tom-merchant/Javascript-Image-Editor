@@ -1,4 +1,9 @@
+#pragma once
+###
+Tools.coffee Tom Merchant 2018
 
+Utility methods for handling the tool system
+###
 toolTable = getElem "tool-table"
 toolTableCols = 2
 toolTableRows = Math.ceil(global.tools.tools.length / toolTableCols)

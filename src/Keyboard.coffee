@@ -1,4 +1,11 @@
 #pragma once
+
+###
+Keyboard.coffee Tom Merchant 2018
+
+A useful file for handling keyboard input
+###
+
 #include <jdefs.h>
 
 keyStates =

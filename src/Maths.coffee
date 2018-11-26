@@ -1,4 +1,11 @@
 #pragma once
+
+###
+Maths.coffee Tom Merchant 2018
+
+Some useful Maths methods
+###
+
 #include <jdefs.h>
 
 global.clamp = (val, min, max) ->

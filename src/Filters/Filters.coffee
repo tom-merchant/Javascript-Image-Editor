@@ -1,4 +1,11 @@
 #pragma once
+
+###
+Filters.coffee Tom Merchant 2018
+
+Contains a utility method for applying filters
+###
+
 #include <jdefs.h>
 #include "Blur.coffee"
 #include "Common.coffee"

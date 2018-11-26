@@ -1,4 +1,12 @@
 #include <jdefs.h>
+
+###
+Grayscale.coffee Tom Merchant 2018
+
+Contains functions for converting an rgb to grayscale
+and back into a 3 channel grayscale
+###
+
 #include "../Utility.coffee"
 
 global.filter.makeGrayscale = (src, dst) ->

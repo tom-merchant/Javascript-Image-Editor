@@ -1,4 +1,11 @@
 #pragma once
+
+###
+Layers.coffee Tom Merchant 2018
+
+DOM glue for layer specific code
+###
+
 #include <jdefs.h>
 #include "../History/History.coffee"
 

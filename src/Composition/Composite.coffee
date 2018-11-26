@@ -1,4 +1,12 @@
 #pragma once
+
+###
+Composite.coffee Tom Merchant 2018
+
+This file provides 2 methods which are used to combine the data contained in
+this applications layers into one traversable canvas area
+###
+
 #include "jdefs.h"
 #include "PixelGrid.coffee"
 

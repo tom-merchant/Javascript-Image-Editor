@@ -1,5 +1,11 @@
 #include "jdefs.h"
 
+###
+Utility.coffee Tom Merchant 2018
+
+A bunch of reuseable useful functions for image editing and filtering
+###
+
 global.arraySum = (arr) ->
   sum = 0
   for v in arr
