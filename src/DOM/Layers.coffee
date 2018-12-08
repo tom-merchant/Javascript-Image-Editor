@@ -100,6 +100,26 @@ global.addLayer = (layer) ->
   layer.redraw()
   global.composite()
 
+global.removeLayer = (id) ->
+  i = 0
+  found = no
+  ###
+  TODO: determine if layers are always in order already and
+  if so possibly use a binary search
+  ###
+  for layer in global.layers
+    if layer.id == id
+      found = yes
+      break
+    i++
+  if found
+    layer = global.layers.splice i, 1
+    global.history.push {type: "delete layer", id: layer.id, position: i, data: JSON.stringify(layer)}
+  global.composite()
+  layerItem = document.getElementById "layer-" + id
+  if layerItem?
+    layerItem.parentElement.removeChild layerItem
+
 global.history.historyFunctionTable["layercompositechange"] = (data, redo) ->
   layerDropdownElem = document.getElementById "layer-dropdown-" + data.layerId
   layer = global.getLayer data.layerId
@@ -122,6 +142,11 @@ global.history.historyFunctionTable["selectlayer"] = (data, redo) ->
     global.selectedLayer = data.old
     setActiveLayerDOM document.getElementById "layer-" + data.old
   global.composite()
+
+global.moveLayerBetween = (srcId, id1, id2) ->
+  ###
+  TODO:
+  ###
 
 global.swapLayers = (id1, id2, commitHistory=true) ->
   layerElem1 = document.getElementById "layer-" + id1

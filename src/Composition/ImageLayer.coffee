@@ -25,10 +25,6 @@ class ImgLayer extends Layer
       @raster = @ctx.getImageData 0, 0, @canvas.width, @canvas.height
       @dataCopied = yes
 
-
-  resize: (newDimensions) ->
-    super.resize newDimensions
-
 global.addUrlLayer = (url) ->
   img = new Image()
   img.src = url

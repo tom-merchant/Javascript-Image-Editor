@@ -40,7 +40,6 @@ class Layer
     @filters = []
     @hidden = false
     @upToDate = no
-    @outdatedBounds = [0, 0, @canvas.width, @canvas.height]
     @raster = global.ctx.createImageData dimensions...
 
   redraw: ->
@@ -51,11 +50,6 @@ class Layer
     @canvas.width = newDimensions.width
     @canvas.height = newDimensions.height
     return
-
-  addFilter: (type, options) ->
-    @filters.push
-      type: type
-      options: options
 
   ###
   Like setPixel but for undoing so the change isnt recorded in history
@@ -121,26 +115,6 @@ class Layer
     @hidden = not @hidden
     @upToDate = no
     return
-
-global.removeLayer = (id) ->
-  i = 0
-  found = no
-  ###
-  TODO: determine if layers are always in order already and
-  if so possibly use a binary search
-  ###
-  for layer in global.layers
-    if layer.id == id
-      found = yes
-      break
-    i++
-  if found
-    layer = global.layers.splice i, 1
-    global.history.push {type: "delete layer", id: layer.id, position: i, data: JSON.stringify(layer)}
-  global.composite()
-  layerItem = document.getElementById "layer-" + id
-  if layerItem?
-    layerItem.parentElement.removeChild layerItem
 
 global.getLayer = (layerId) ->
   found = no
